@@ -46,6 +46,7 @@
 /* PLUTO paginated bubble */
 (function(){
   const bub=document.getElementById('bubble'); if(!bub)return;
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const pages=[
     "Hi, I'm PLUTO, the onboard computer. Welcome to Sourav's workbench.",
     "He stepped away from the console, so the tools and I are holding the fort.",
@@ -54,8 +55,19 @@
   ];
   const txt=document.getElementById('btxt'),dots=document.getElementById('bdots'),cnt=document.getElementById('bcnt');
   dots.innerHTML=pages.map(()=>'<i></i>').join('');
-  let cur=0;
-  function show(i){cur=(i+pages.length)%pages.length;txt.textContent=pages[cur];
+  let cur=0,typeTimer=null;
+  function typeText(str){
+    clearInterval(typeTimer);
+    if(reduce){txt.textContent=str;return;}
+    bub.classList.add('typing');
+    txt.textContent='';
+    let i=0;
+    typeTimer=setInterval(()=>{
+      i++;txt.textContent=str.slice(0,i);
+      if(i>=str.length){clearInterval(typeTimer);bub.classList.remove('typing');}
+    },16);
+  }
+  function show(i){cur=(i+pages.length)%pages.length;typeText(pages[cur]);
     [...dots.children].forEach((d,k)=>d.classList.toggle('on',k===cur));
     cnt.textContent=(cur+1)+' / '+pages.length;}
   bub.addEventListener('click',()=>show(cur+1));

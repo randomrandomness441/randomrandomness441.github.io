@@ -57,6 +57,7 @@ h1 .yay{display:inline-block;background:var(--yellow);padding:0 .18em;border-rad
 .bubble::after{content:"";position:absolute;bottom:-14px;left:56px;width:24px;height:24px;background:#fff;border-right:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:rotate(45deg) skew(8deg,8deg)}
 .bubble .who{display:inline-block;font-family:var(--mono);font-size:.68rem;font-weight:600;background:var(--aqua);border:2px solid var(--ink);border-radius:99px;padding:.1rem .7rem;margin-bottom:.5rem}
 .bubble .txt{font-size:1rem;min-height:2.6rem;color:var(--ink)}
+.bubble.typing .txt::after{content:"";display:inline-block;width:2px;height:1em;background:var(--ink);margin-left:2px;vertical-align:-2px;animation:blink .9s steps(1) infinite}
 .bubble .pg{display:flex;align-items:center;gap:.45rem;margin-top:.6rem}
 .bubble .pg .dots{display:flex;gap:5px}
 .bubble .pg .dots i{width:9px;height:9px;border:2px solid var(--ink);border-radius:50%;background:transparent;transition:background .2s}
