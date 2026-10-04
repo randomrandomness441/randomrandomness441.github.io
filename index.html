@@ -62,13 +62,23 @@
 
     <div class="bench-wrap">
       <div class="bench" id="bench">
-        <span class="hinttag">drag me around, I won't tell</span>
-        <div id="stage"></div>
-        <button id="pbd" title="a pale, blue dot" aria-label="A pale blue dot, press for a message"><span class="sr">pale blue dot</span></button>
+        <div class="gtop">
+          <div class="gtabs" role="tablist" aria-label="choose a game">
+            <button class="gtab on" data-game="whack" role="tab" aria-selected="true">whack-a-mole</button>
+            <button class="gtab" data-game="catch" role="tab" aria-selected="false">catch</button>
+            <button class="gtab" data-game="memory" role="tab" aria-selected="false">memory</button>
+          </div>
+          <button id="pbd" title="a pale, blue dot" aria-label="A pale blue dot, press for a message"><span class="sr">pale blue dot</span></button>
+        </div>
+        <div class="ghud">
+          <span class="gstat"><b id="gscore">SCORE 0</b></span>
+          <span class="gstat" id="gtimewrap"><b id="gtime">0:20</b></span>
+          <button id="gstart">▶ play</button>
+        </div>
+        <div id="gstage" class="gstage"></div>
       </div>
       <div class="bench-controls">
-        <button id="resetbench">↺ Reset workbench</button>
-        <span class="benchnote">objects are load-bearing, mostly.</span>
+        <span class="benchnote" id="gmsg">pick a game and hit play.</span>
         <span class="benchnote viewwork">VIEW WORK ↓</span>
       </div>
     </div>
@@ -165,7 +175,7 @@
 <div id="plutow">
   <button class="x" aria-label="close">✕</button>
   <span class="who">PLUTO</span>
-  <p id="plutowtxt">psst, the objects on my workbench are draggable. just saying.</p>
+  <p id="plutowtxt">psst, try the whack-a-mole. it's harder than it looks.</p>
 </div>
 
 <div id="modal" role="dialog" aria-modal="true" aria-label="A message">
@@ -178,196 +188,210 @@
 
 <script src="main.js"></script>
 <script>
-/* ---------- draggable workbench (index only) ---------- */
-/* ---------- draggable workbench: fixed 1120x340 stage, scaled to fit ---------- */
+/* ---------- mini games (index only) ---------- */
 (function(){
-  const bench=document.getElementById('bench'),stage=document.getElementById('stage');
-  const STW=1120,STH=340;
-  let S=1;
-  const objects=[
-  {
-    "id": "stickies",
-    "x": 8,
-    "y": 196,
-    "w": 88,
-    "h": 88,
-    "z": 1,
-    "cls": "obj sticker",
-    "svg": "\n      <svg width=\"88\" height=\"88\" viewBox=\"0 0 72 72\"><g class=\"wob-hover\"><g id=\"color\">\n    <rect x=\"16.4055\" y=\"11.3783\" width=\"39.5645\" height=\"49.0659\" fill=\"#fff\"/>\n    <polyline fill=\"#f4aa41\" points=\"39.9312 40.2224 51.2252 28.9284 56.8562 36.3591 46.3562 46.8706\"/>\n    <polyline fill=\"#a57939\" points=\"37.9415 46.8185 39.902 41.17 46.3562 47.624 40.7075 49.5846\"/>\n    <polyline fill=\"#ea5a47\" points=\"55.3215 25.5799 59.3001 21.6013 66.0352 28.1847 62.0904 32.1296\"/>\n    <polyline fill=\"#d0cfce\" points=\"50.4943 29.6593 55.1018 25.0519 61.7836 31.7907 57.2152 36.3591\"/>\n  </g>\n  <g id=\"line\">\n    <polygon points=\"38.0702 47.191 40.4564 49.5772 36.9921 50.8566 38.0702 47.191\"/>\n    <line x1=\"22.3215\" x2=\"49.3215\" y1=\"19.875\" y2=\"19.875\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"22.3215\" x2=\"47.9215\" y1=\"27.875\" y2=\"27.875\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"22.3215\" x2=\"39.4312\" y1=\"35.875\" y2=\"35.875\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"22.3215\" x2=\"34.5284\" y1=\"43.875\" y2=\"43.875\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"22.3215\" x2=\"32.4675\" y1=\"51.875\" y2=\"51.875\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <polygon points=\"38.0702 47.191 40.4564 49.5772 36.9921 50.8566 38.0702 47.191\"/>\n    <polygon fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"40.6919 49.591 46.3562 47.624 61.9461 32.034 55.492 25.5799 39.902 41.17 37.9282 46.841 40.6919 49.591\"/>\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"58.0856 22.9863 59.6411 21.4309 66.0952 27.885 64.4634 29.5168\"/>\n    <line x1=\"40.2788\" x2=\"46.7329\" y1=\"40.7932\" y2=\"47.2473\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"37.9323 46.8277 36.5493 50.9768 40.7075 49.5846\"/>\n    <line x1=\"51.3023\" x2=\"57.1946\" y1=\"30.1572\" y2=\"36.0495\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.0206\" points=\"55.3215 44.228 55.3215 59.875 16.3215 59.875 16.3215 11.875 55.3215 11.875 55.3215 20.3309\"/>\n  </g></g></svg>"
-  },
-  {
-    "id": "notebook",
-    "x": 20,
-    "y": 88,
-    "w": 100,
-    "h": 100,
-    "z": 2,
-    "cls": "obj sticker",
-    "svg": "\n      <svg width=\"100\" height=\"100\" viewBox=\"0 0 72 72\"><g class=\"wob-hover\"><g id=\"color\">\n    <path fill=\"#FFFFFF\" stroke=\"none\" d=\"M60.069,17.0151l-5.9178-0.9325H17.21l-5.2722,0.9684l0.0358,43.2177l31.6332-0.0359l16.4981-12.0507 L60.069,17.0151z\"/>\n    <path fill=\"#d0cfce\" stroke=\"none\" d=\"M56.9559,49.0381H44.1387v4.4795c0,0.5527-0.4473,1-1,1c-0.502,0-0.8992-0.3752-0.9712-0.8569v5.4255 l1.1596-0.0003L56.9559,49.0381z\"/>\n    <line x1=\"45.4806\" x2=\"45.4806\" y1=\"13.9548\" y2=\"19.5906\" fill=\"#FFFFFF\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"40.7203\" x2=\"40.7203\" y1=\"13.9548\" y2=\"19.5906\" fill=\"#FFFFFF\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"35.96\" x2=\"35.96\" y1=\"13.9548\" y2=\"19.5906\" fill=\"#FFFFFF\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"50.2408\" x2=\"50.2408\" y1=\"13.9548\" y2=\"19.5906\" fill=\"#FFFFFF\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"31.1997\" x2=\"31.1997\" y1=\"13.9548\" y2=\"19.5906\" fill=\"#FFFFFF\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"26.4394\" x2=\"26.4394\" y1=\"13.9548\" y2=\"19.5906\" fill=\"#FFFFFF\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"21.6792\" x2=\"21.6792\" y1=\"13.9548\" y2=\"19.5906\" fill=\"#FFFFFF\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n  </g>\n  <g id=\"hair\"/>\n  <g id=\"skin\"/>\n  <g id=\"skin-shadow\"/>\n  <g id=\"line\">\n    <line x1=\"45.4806\" x2=\"45.4806\" y1=\"13.9548\" y2=\"19.5906\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"40.7203\" x2=\"40.7203\" y1=\"13.9548\" y2=\"19.5906\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"35.96\" x2=\"35.96\" y1=\"13.9548\" y2=\"19.5906\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"50.2408\" x2=\"50.2408\" y1=\"13.9548\" y2=\"19.5906\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"31.1997\" x2=\"31.1997\" y1=\"13.9548\" y2=\"19.5906\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"26.4394\" x2=\"26.4394\" y1=\"13.9548\" y2=\"19.5906\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"21.6792\" x2=\"21.6792\" y1=\"13.9548\" y2=\"19.5906\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"16.9896\" x2=\"54.7874\" y1=\"29.3515\" y2=\"29.3515\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"16.9896\" x2=\"54.7874\" y1=\"39.8249\" y2=\"39.8249\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"16.9896\" x2=\"39.115\" y1=\"50.2984\" y2=\"50.2984\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"25.9463\" x2=\"25.9463\" y1=\"24.4434\" y2=\"55.5488\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"54.3253,16.9734 59.96,16.9734 59.997,48.0382 43.6564,60.0864 11.997,60.0918 11.96,16.9734 17.5992,16.9734\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"59.7462,48.0382 43.1384,48.0382 43.1384,53.5175\"/>\n  </g></g></svg>"
-  },
-  {
-    "id": "floppies",
-    "x": 150,
-    "y": 170,
-    "w": 96,
-    "h": 96,
-    "z": 2,
-    "cls": "obj sticker",
-    "svg": "\n      <svg width=\"96\" height=\"96\" viewBox=\"0 0 72 72\"><g class=\"wob-hover\"><g id=\"color\">\n    <rect x=\"11.1359\" y=\"11\" width=\"50\" height=\"50\" fill=\"#3F3F3F\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <polyline fill=\"#D0CFCE\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"56.1359,60 56.1359,35.1616 16.1359,35.1616 16.1359,60\"/>\n    <polyline fill=\"#9B9B9A\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"16.1359,12 16.1359,29.6067 47.0488,29.6067 47.0488,12\"/>\n    <rect x=\"19.9563\" y=\"38.96\" width=\"32.0306\" height=\"5.7713\" fill=\"#61B2E4\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n  </g>\n  <g id=\"hair\"/>\n  <g id=\"skin\"/>\n  <g id=\"skin-shadow\"/>\n  <g id=\"line\">\n    <rect x=\"11.1359\" y=\"11\" width=\"50\" height=\"50\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"56.1359,60 56.1359,35.1616 16.1359,35.1616 16.1359,60\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"16.1359,12 16.1359,29.6067 47.0488,29.6067 47.0488,12\"/>\n    <rect x=\"19.9563\" y=\"38.96\" width=\"32.0306\" height=\"5.7713\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n  </g></g><text x=\"36\" y=\"68\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\" font-size=\"7\" fill=\"var(--ink)\">backup: life</text></svg>"
-  },
-  {
-    "id": "cube",
-    "x": 258,
-    "y": 236,
-    "w": 76,
-    "h": 76,
-    "z": 4,
-    "cls": "obj sticker",
-    "svg": "\n      <svg width=\"76\" height=\"76\" viewBox=\"0 0 72 72\"><g class=\"wob-hover\"><g id=\"color\">\n    <polygon fill=\"#D0CFCE\" points=\"58.0936,22.6076 35.6729,27.8442 13.9289,22.2732 35.6729,17.4173\"/>\n    <polygon fill=\"#9B9B9A\" points=\"58.2211,48.3473 36.0428,54.1045 35.6729,27.0042 58.1657,21.846\"/>\n    <polygon fill=\"#D0CFCE\" points=\"13.9856,47.957 35.7027,54.1045 35.6729,27.8442 22.6497,24.6986 13.9832,22.2957\"/>\n  </g>\n  <g id=\"hair\"/>\n  <g id=\"skin\"/>\n  <g id=\"skin-shadow\"/>\n  <g id=\"line\">\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2.069\" points=\"35.6352,54.0172 57.4698,48.7313 57.4698,21.7647 35.6167,26.5155 13.7667,21.7647 13.7667,48.7313 35.6013,54.0172 35.6013,30.3713\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2.069\" points=\"13.7667,21.7647 35.8082,16.4545 57.4698,21.7647\"/>\n    <circle cx=\"21.2735\" cy=\"32.9339\" r=\"3\"/>\n    <circle cx=\"27.2446\" cy=\"44.3761\" r=\"3\"/>\n    <circle cx=\"41.767\" cy=\"45.2211\" r=\"3\"/>\n    <circle cx=\"46.8274\" cy=\"38.0668\" r=\"3\"/>\n    <circle cx=\"51.8878\" cy=\"30.9124\" r=\"3\"/>\n    <ellipse cx=\"35.8312\" cy=\"21.1219\" rx=\"4\" ry=\"1.6191\"/>\n  </g></g></svg>"
-  },
-  {
-    "id": "pluto",
-    "x": 352,
-    "y": 124,
-    "w": 150,
-    "h": 150,
-    "z": 5,
-    "cls": "obj",
-    "svg": "\n      <svg width=\"150\" height=\"150\" viewBox=\"0 0 150 150\"><g class=\"wob-hover\">\n        <path d=\"M60 22 q2 -12 12 -10\" fill=\"none\" stroke=\"var(--ink)\" stroke-width=\"3\" stroke-linecap=\"round\"/>\n        <circle cx=\"74\" cy=\"11\" r=\"6\" fill=\"var(--coral)\" stroke=\"var(--ink)\" stroke-width=\"2.4\"/>\n        <rect x=\"22\" y=\"24\" width=\"106\" height=\"88\" rx=\"14\" fill=\"var(--lav)\" stroke=\"var(--ink)\" stroke-width=\"3\"/>\n        <rect x=\"34\" y=\"36\" width=\"82\" height=\"56\" rx=\"9\" fill=\"#fff\" stroke=\"var(--ink)\" stroke-width=\"2.2\"/>\n        <rect x=\"48\" y=\"50\" width=\"8\" height=\"16\" rx=\"4\" fill=\"var(--ink)\"/>\n        <rect x=\"76\" y=\"50\" width=\"8\" height=\"16\" rx=\"4\" fill=\"var(--ink)\"/>\n        <path d=\"M58 76 q17 10 34 0\" fill=\"none\" stroke=\"var(--ink)\" stroke-width=\"3\" stroke-linecap=\"round\"/>\n        <rect x=\"34\" y=\"118\" width=\"18\" height=\"12\" rx=\"4\" fill=\"var(--pink)\" stroke=\"var(--ink)\" stroke-width=\"2.4\"/>\n        <rect x=\"98\" y=\"118\" width=\"18\" height=\"12\" rx=\"4\" fill=\"var(--pink)\" stroke=\"var(--ink)\" stroke-width=\"2.4\"/>\n        <circle cx=\"28\" cy=\"68\" r=\"4\" fill=\"var(--mint)\" stroke=\"var(--ink)\" stroke-width=\"2\"/>\n      </g></svg>"
-  },
-  {
-    "id": "pencil",
-    "x": 392,
-    "y": 12,
-    "w": 70,
-    "h": 70,
-    "z": 4,
-    "cls": "obj sticker",
-    "svg": "\n      <svg width=\"70\" height=\"70\" viewBox=\"0 0 72 72\"><g class=\"wob-hover\"><g id=\"color\">\n    <polygon fill=\"#3F3F3F\" stroke=\"none\" points=\"14.5943,53.154 18.2544,56.814 12.6242,59.0928\"/>\n    <polyline fill=\"#f4aa41\" stroke=\"none\" points=\"18.0381,41.8761 36.8684,23.0457 48.1813,34.3586 29.5108,53.0291\"/>\n    <polyline fill=\"#a57939\" stroke=\"none\" points=\"14.4132,52.5663 17.9281,43.3946 27.8278,53.2939 18.6558,56.809\"/>\n    <polyline fill=\"#EA5A47\" stroke=\"none\" points=\"42.9209,16.9933 50.4228,9.4913 61.7357,20.8042 54.2975,28.2424\"/>\n    <polyline fill=\"#9b9b9a\" stroke=\"none\" points=\"35.6498,24.2643 43.3318,16.5823 54.6447,27.8952 47.0278,35.512\"/>\n  </g>\n  <g id=\"hair\"/>\n  <g id=\"skin\"/>\n  <g id=\"skin-shadow\"/>\n  <g id=\"line\">\n    <polygon fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"18.6304,56.8203 27.8278,53.2939 53.8207,27.301 43.9212,17.4015 17.9281,43.3946 14.3904,52.6032\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"47.3354,13.9873 50.8388,10.4839 60.7383,20.3834 57.2645,23.8572\"/>\n    <line x1=\"18.5562\" x2=\"28.4557\" y1=\"42.7665\" y2=\"52.6659\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"14.3979,52.5817 11.9073,59.3148 18.6558,56.809\"/>\n    <line x1=\"36.9099\" x2=\"46.4225\" y1=\"25.0073\" y2=\"34.5199\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n  </g></g></svg>"
-  },
-  {
-    "id": "keyboard",
-    "x": 516,
-    "y": 230,
-    "w": 104,
-    "h": 104,
-    "z": 3,
-    "cls": "obj sticker",
-    "svg": "\n      <svg width=\"104\" height=\"104\" viewBox=\"0 0 72 72\"><g class=\"wob-hover\"><g id=\"color\">\n    <path transform=\"translate(0 .408)\" fill=\"#d0cfce\" d=\"m5 18.09h62v35.82h-62z\"/>\n    <rect x=\"9\" y=\"25\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"60\" y=\"25\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"16.29\" y=\"25\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"23.57\" y=\"25\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"30.86\" y=\"25\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"38.14\" y=\"25\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"45.43\" y=\"25\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"52.71\" y=\"25\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"20.5\" y=\"34.5\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"48.5\" y=\"34.5\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"9\" y=\"44\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"16\" y=\"44\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"53\" y=\"44\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"60\" y=\"44\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"41.5\" y=\"34.5\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"34.5\" y=\"34.5\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"27.5\" y=\"34.5\" width=\"3\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"22.93\" y=\"44\" width=\"26.14\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"9\" y=\"34.5\" width=\"7.5\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n    <rect x=\"55.5\" y=\"34.5\" width=\"7.5\" height=\"3\" fill=\"#9b9b9a\" fill-rule=\"evenodd\" stroke=\"#9b9b9a\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" opacity=\"0.999\"/>\n  </g>\n  <g id=\"hair\"/>\n  <g id=\"skin\"/>\n  <g id=\"skin-shadow\"/>\n  <g id=\"line\">\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m5 18.5h62v35h-62z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m9 47h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m22.93 47h26.14v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m16 47h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m53 47h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m60 47h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m55.5 37.5h7.5v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m16.29 28h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m23.57 28h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m30.86 28h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m38.14 28h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m45.43 28h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m52.71 28h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m60 28h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m9 28h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m9 37.5h7.5v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m48.5 37.5h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m41.5 37.5h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m34.5 37.5h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m27.5 37.5h3v-3\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"m20.5 37.5h3v-3\"/>\n  </g></g></svg>"
-  },
-  {
-    "id": "mouse",
-    "x": 632,
-    "y": 250,
-    "w": 80,
-    "h": 80,
-    "z": 3,
-    "cls": "obj sticker",
-    "svg": "\n      <svg width=\"80\" height=\"80\" viewBox=\"0 0 72 72\"><g class=\"wob-hover\"><g id=\"color\">\n    <path fill=\"#d0cfce\" d=\"m38.41,11.95h-4.821c-7.25,0-13.18,4.932-13.18,12.18v23.74c0,7.25,5.932,12.18,13.18,12.18h4.821c7.25,0,13.18-4.932,13.18-12.18v-23.74c-.0001-7.25-5.932-12.18-13.18-12.18Z\"/>\n    <path fill=\"#3f3f3f\" d=\"m36.15,17.93h-.3082c-1.407,0-2.558,1.151-2.558,2.558v7.94c0,1.407,1.151,2.558,2.558,2.558h.3082c1.407,0,2.558-1.151,2.558-2.558v-7.94c0-1.407-1.151-2.558-2.558-2.558Z\"/>\n    <path fill=\"#9b9b9a\" d=\"m34.79,12.79c3.959,1.699,7.723,4.137,8.161,10.3.5077,7.135-2.133,20.5-2.982,27.28-.5935,4.745-2.3281,6.4477-5.4441,8.9377-1.571,1.256,6.7008.6745,10.1818-1.3614,2.989-1.747,3.9726-3.4222,5.7914-6.5333l.1283-30.0929s-1.225-9.075-11.2-9.078c0,0-10.01-.5155-4.635.5512l-.0014-.0034Z\"/>\n  </g>\n  <g id=\"line\">\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m36.26,31.12h-.5181c-1.37,0-2.49-1.115-2.49-2.478v-8.126c0-1.363,1.121-2.478,2.49-2.478h.5181c1.37,0,2.49,1.115,2.49,2.478v8.126c0,1.363-1.121,2.478-2.49,2.478Z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m39.61,60.05h-7.215c-6.475,0-11.77-5.263-11.77-11.7v-24.71c0-6.432,5.298-11.7,11.77-11.7h7.215c6.475,0,11.77,5.263,11.77,11.7v24.71c0,6.432-5.298,11.7-11.77,11.7Z\"/>\n  </g></g></svg>"
-  },
-  {
-    "id": "dish",
-    "x": 722,
-    "y": 172,
-    "w": 115,
-    "h": 115,
-    "z": 3,
-    "cls": "obj sticker",
-    "svg": "\n      <svg width=\"115\" height=\"115\" viewBox=\"0 0 72 72\"><g class=\"wob-hover\"><g id=\"color\">\n    <path fill=\"#d0cfce\" d=\"m14.276,31.5192h3.2117l-.0234-1.1721-3.2401.0106c-.0434.3279.0085.8336.0519,1.1615Z\"/>\n    <polygon fill=\"#9b9b9a\" points=\"52.4477 59.999 54.9527 38.197 51.7041 38.197 48.8004 59.999 52.4477 59.999\"/>\n    <path fill=\"#d0cfce\" d=\"m47.6445,29.3771c.0569.5118.0938,1.0293.0938,1.556,0-.5267-.0369-1.0442-.0938-1.556Z\"/>\n    <path fill=\"#d0cfce\" d=\"m48.8004,29.3771c-.4111-3.6953-2.5001-7.7075-5.8095-10.2492-2.6571-2.0407-6.2527-2.9817-9.2531-3.1947l.2712,26.9989c.2486.6495-.3346,2.4231.6547,2.6473,2.0178.4572,6.3562-1.3102,8.0762-2.6473,1.7857-1.3882,3.8837-3.5192,4.9515-6.3317.9164-2.4136.9159-5.4874,1.109-7.2233Z\"/>\n    <path fill=\"#9b9b9a\" d=\"m34.7383,41.7864l-1.2595.1084.259,4.0384c2.2672-.1608,8.4311-2.5655,10.2455-4.0463,2.9667-2.4215,4.7545-5.8777,4.7545-10.9537,0-.5267,0-1.7478-1.0933-1.5561-.7412,6.6622-6.1689,11.9313-12.9062,12.4093Z\"/>\n    <path fill=\"#3f3f3f\" d=\"m52.7421,27.7526l-3.4453-.0401c-.499.189-.6415,5.5357-.0034,6.2814h3.0961s2.7955-.5886,2.4704-3.7291c-.3754-2.5138-1.5545-2.5138-2.1178-2.5122Z\"/>\n  </g>\n  <g id=\"line\">\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m33.7378,45.9332c8.2843,0,15-6.7157,15-15s-6.7157-15-15-15v30Z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m52.6418,27.9625c1.6565.0351,2.9709,1.4064,2.9358,3.0629-.0351,1.6565-1.4064,2.9709-3.0629,2.9358\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m18.4115,32.4905h-4.3872s-.7404.0215-.7404-1.5303.7404-1.5305.7404-1.5305h4.3872v3.0608Z\"/>\n    <line x1=\"24.1309\" x2=\"33.7378\" y1=\"30.9332\" y2=\"30.9332\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"22.1212\" x2=\"33.7378\" y1=\"27.6488\" y2=\"15.9332\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"22.1564\" x2=\"33.7378\" y1=\"34.2741\" y2=\"45.9332\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"40.2378\" x2=\"58.8314\" y1=\"59.999\" y2=\"59.999\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"48.8004 59.999 51.7041 38.197 54.9527 38.197 52.049 59.999\"/>\n  </g></g></svg>"
-  },
-  {
-    "id": "telescope",
-    "x": 867,
-    "y": 169,
-    "w": 100,
-    "h": 100,
-    "z": 2,
-    "cls": "obj sticker",
-    "svg": "\n      <svg width=\"100\" height=\"100\" viewBox=\"0 0 72 72\"><g class=\"wob-hover\"><g id=\"color\">\n    <path fill=\"#3f3f3f\" d=\"m52.3814,18.772l-3.5781-8.2122-6.837,3.3699c.2373-.1073,3.2886,7.6306,3.2886,7.6306.1093.2534,7.1265-2.7883,7.1265-2.7883Z\"/>\n    <path fill=\"#9b9b9a\" d=\"m29.095,27.698l3.8277-1.665c-.0619.0172,12.4053-4.5587,12.4053-4.5587l-3.1999-7.6428-15.205,7.5593,2.1719,6.3072Z\"/>\n    <path fill=\"#9b9b9a\" d=\"m14.6585,27.9833l1.7596,3.9323,13.2103-4.4182-2.4411-6.2384-4.0234,2.1377c.2375-.0993-8.5054,4.5866-8.5054,4.5866Z\"/>\n  </g>\n  <g id=\"line\">\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"16.0186 56.6623 29.1491 36.039 31.624 36.039 43.8948 56.6564\"/>\n    <line x1=\"30.4618\" x2=\"30.4618\" y1=\"36.741\" y2=\"60.257\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"9.7475\" x2=\"11.8352\" y1=\"32.5748\" y2=\"31.7117\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"45.6328 12.1786 48.8033 10.5598 52.3814 18.772 49.2019 19.9125\"/>\n    <line x1=\"26.8219\" x2=\"30.3531\" y1=\"19.924\" y2=\"31.3607\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <circle cx=\"30.3531\" cy=\"31.3607\" r=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"25.028 28.5329 16.1973 31.7319 14.6585 28.1744 23.5457 23.5568\"/>\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"30.9216 19.7807 42.1281 14.0815 45.2549 21.3103 32.6562 25.8289\"/>\n  </g></g></svg>"
-  },
-  {
-    "id": "rocket",
-    "x": 845,
-    "y": 35,
-    "w": 100,
-    "h": 100,
-    "z": 3,
-    "cls": "obj sticker",
-    "svg": "\n      <svg width=\"100\" height=\"100\" viewBox=\"0 0 72 72\"><g class=\"wob-hover\"><g id=\"color\">\n    <circle cx=\"48.4645\" cy=\"23.7594\" r=\"2.1014\" fill=\"#fff\"/>\n    <path fill=\"#fcea2b\" d=\"m16.12,48.114c-3.1584,3.1634-4.6518,7.5601-3.97,11.688,4.128.6763,8.5223-.8196,11.683-3.977,3.1584-3.1634,4.6518-7.5601,3.97-11.688-4.128-.6763-8.5223.8196-11.683,3.977Z\"/>\n    <path fill=\"#61b2e4\" d=\"m31.973,45.839c-.1919.966-.6657,1.8536-1.3616,2.5507-.3389.3373-.7246.6241-1.1452.8516,2.1626,2.9716,3.7579,6.2847,4.6952,9.7506.7092-.6216,1.3906-1.2786,2.0417-1.9685,1.9136-2.0343,3.5491-4.3376,4.8516-6.8326,1.2507-2.4201,2.1751-4.9922,2.7442-7.6354-3.7285,1.9544-7.7719,3.0771-11.826,3.2837h0Z\"/>\n    <path fill=\"#92d3f5\" d=\"m14.923,35.749c-.69.65-1.3472,1.3303-1.9691,2.0383,3.4682.9313,6.7846,2.521,9.7604,4.6784.2264-.414.5104-.7939.8435-1.1281.6949-.6935,1.5791-1.1665,2.5417-1.3598.2106-4.0507,1.3364-8.0899,3.293-11.814.0019-.0037.0037-.0074.0056-.0112-2.645.5687-5.2188,1.4928-7.6405,2.7434-2.496,1.303-4.7999,2.9389-6.8346,4.853h0Z\"/>\n    <path fill=\"#ea5a47\" d=\"m34.821,20.747c-5.2314,5.2507-8.3665,12.1635-8.7228,19.233,1.6376-.3318,3.3326.1781,4.515,1.3584,1.186,1.1868,1.6956,2.8903,1.356,4.5332,7.0754-.3609,13.9919-3.5024,19.242-8.7398,6.7117-6.7229,9.8843-16.067,8.4337-24.839-1.7318-.2827-3.5044-.3879-5.2915-.3141-7.1741.2926-14.2097,3.4508-19.532,8.7677l-.0004.0006Zm10.249-.5291c1.8412-1.8413,4.8269-1.8418,6.6687-.0012.0004.0004.0008.0008.0012.0012,1.8418,1.8407,1.8424,4.8255.0012,6.6667-.0004.0004-.0008.0008-.0012.0012-1.8419,1.8404-4.8274,1.8398-6.6685-.0014-1.8417-1.8406-1.8424-4.8252-.0014-6.6665Z\"/>\n    <path fill=\"#f1b31c\" d=\"m26.538,52.037c-.8756.9831-1.8894,1.8467-3.0072,2.5617-3.4907,2.2228-7.7244,2.8345-11.441,1.653-.1495,1.1964-.1293,2.3916.06,3.5496,4.128.6763,8.5223-.8195,11.683-3.9769,1.1048-1.1131,2.0209-2.3956,2.7055-3.7874h-.0003Z\"/>\n    <path fill=\"#d22f27\" d=\"m26.204,38.687c-.033.4281-.0559.8558-.0684,1.283,1.6271-.316,3.305.1967,4.4773,1.3682,1.186,1.1868,1.6956,2.8903,1.356,4.5332,7.075-.3618,13.9907-3.5038,19.24-8.7412,1.4932-1.5067,2.8266-3.1619,3.9746-4.9339-1.3472,1.2267-2.8051,2.3344-4.353,3.3074-7.5574,4.7109-16.6938,5.8918-24.627,3.1832h.0005Z\"/>\n    <path fill=\"#61b2e4\" d=\"m24.039,48.551c.8703-.4372,1.7206-.9178,2.5501-1.438,2.4433-1.5323,4.6776-3.4046,6.6294-5.5552l.0028-.0028c1.8803-2.0911,3.4745-4.4187,4.7329-6.9122.061-.1204.0967-.252.1047-.3867-3.3985-.7533-14.846,10.251-14.0199,14.2949h0Z\"/>\n  </g>\n  <g id=\"line\">\n    <path d=\"m48.405,29.49c-3.2761,0-5.941-2.6641-5.941-5.9392s2.6649-5.9392,5.941-5.9392,5.941,2.6641,5.941,5.9392-2.6649,5.9392-5.941,5.9392Zm0-9.8987c-2.1839,0-3.9607,1.7757-3.9607,3.9595s1.7768,3.9595,3.9607,3.9595,3.9607-1.7758,3.9607-3.9595-1.7769-3.9595-3.9607-3.9595Z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.949\" d=\"m20.653,45.063c-1.678.7083-3.2222,1.7475-4.5331,3.0508-3.1581,3.1631-4.6517,7.5594-3.9703,11.687,4.128.6762,8.5221-.8196,11.683-3.9769,1.3043-1.3104,2.3446-2.8541,3.0537-4.5318\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.949\" d=\"m14.923,35.749c-.69.65-1.3472,1.3303-1.9691,2.0383,3.4682.9313,6.7846,2.521,9.7604,4.6784.2264-.414.5104-.7939.8435-1.1281.6949-.6935,1.5791-1.1665,2.5417-1.3598.2106-4.0507,1.3364-8.0899,3.293-11.814.0019-.0037.0037-.0074.0056-.0112-2.645.5687-5.2188,1.4928-7.6405,2.7434-2.496,1.303-4.7999,2.9389-6.8346,4.853h0Z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.949\" d=\"m31.973,45.839c-.1919.966-.6657,1.8536-1.3616,2.5507-.3389.3373-.7246.6241-1.1452.8516,2.1626,2.9716,3.7579,6.2847,4.6952,9.7506.7092-.6216,1.3906-1.2786,2.0417-1.9685,1.9136-2.0343,3.5491-4.3376,4.8516-6.8326,1.2507-2.4201,2.1751-4.9922,2.7442-7.6354-3.7285,1.9544-7.7719,3.0771-11.826,3.2837h0Z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.949\" d=\"m31.83,43.345c.2696.8863.2506,1.6919.1371,2.5245,7.0759-.3611,13.993-3.5031,19.243-8.7412,6.7106-6.7215,9.8836-16.063,8.4351-24.834-8.7712-1.4365-18.108,1.742-24.823,8.4508-5.2322,5.2509-8.3679,12.164-8.7242,19.234.9413-.1907,1.8984-.0942,2.7693.2387\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.949\" d=\"m37.072,34.196h-.0002c-2.4156,1.2183-4.6724,2.7626-6.6996,4.5844-2.0849,1.8911-3.9,4.0556-5.3844,6.4211-.5039.8031-.9684,1.6273-1.3917,2.4694\"/>\n  </g></g></svg>"
-  },
-  {
-    "id": "satellite",
-    "x": 990,
-    "y": 16,
-    "w": 105,
-    "h": 105,
-    "z": 3,
-    "cls": "obj sticker",
-    "svg": "\n      <svg width=\"105\" height=\"105\" viewBox=\"0 0 72 72\"><g class=\"wob-hover\"><g id=\"color\">\n    <path fill=\"#d0cfce\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"M24.2814,24.4049c3.6326-3.6326,3.934-9.4125,0.8702-13.3997c-0.3699-0.4815-1.0826-0.53-1.512-0.1007L11.0003,23.5439 c-0.4196,0.4196-0.3828,1.1114,0.0737,1.4905C14.9386,28.2441,20.6405,28.0457,24.2814,24.4049z\"/>\n    <path fill=\"#3f3f3f\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"M15.7278,67.7278L4.4142,56.4142c-0.3906-0.3906-0.3906-1.0237,0-1.4143l15.1005-15.1005c0.3905-0.3905,1.0236-0.3905,1.4142,0 l11.3137,11.3137c0.3905,0.3906,0.3905,1.0237,0,1.4142L17.1421,67.7278C16.7515,68.1184,16.1184,68.1184,15.7278,67.7278z\"/>\n    <path fill=\"#3f3f3f\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"M51.2131,32.2426L39.8994,20.9289c-0.3905-0.3905-0.3905-1.0237,0-1.4142L54.9999,4.4142c0.3906-0.3906,1.0237-0.3906,1.4143,0 l11.3136,11.3136c0.3906,0.3906,0.3906,1.0237,0,1.4143L52.6273,32.2426C52.2368,32.6331,51.6036,32.6331,51.2131,32.2426z\"/>\n    <path fill=\"#d0cfce\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"M51.9203,39.1924L39.1924,51.9203c-0.3905,0.3905-1.0237,0.3905-1.4142,0L23.636,37.7782c-0.3905-0.3905-0.3905-1.0237,0-1.4142 l12.728-12.728c0.3905-0.3905,1.0237-0.3905,1.4142,0l14.1421,14.1422C52.3108,38.1687,52.3108,38.8019,51.9203,39.1924z\"/>\n    <path fill=\"#9b9b9a\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"M36.364,23.636L23.636,36.364c-0.3905,0.3905-1.0237,0.3905-1.4142,0l-4.2426-4.2427c-0.3905-0.3905-0.3905-1.0237,0-1.4142 l12.7279-12.7279c0.3905-0.3905,1.0237-0.3905,1.4142,0l4.2427,4.2426C36.7545,22.6123,36.7545,23.2455,36.364,23.636z\"/>\n    <path fill=\"#9b9b9a\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"M53.3345,44.8492l-8.4853,8.4853c-0.3905,0.3905-1.0236,0.3905-1.4142,0l-2.1213-2.1213c-0.3905-0.3905-0.3905-1.0237,0-1.4142 l8.4853-8.4853c0.3905-0.3905,1.0237-0.3905,1.4142,0l2.1213,2.1213C53.725,43.8256,53.725,44.4587,53.3345,44.8492z\"/>\n    <ellipse cx=\"12.3223\" cy=\"12.3223\" rx=\"2\" ry=\"2\" transform=\"matrix(0.7071 -0.7071 0.7071 0.7071 -5.1041 12.3223)\" fill=\"#3f3f3f\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n  </g>\n  <g id=\"hair\"/>\n  <g id=\"skin\"/>\n  <g id=\"skin-shadow\"/>\n  <g id=\"line\">\n    <line x1=\"45.5\" x2=\"43.07\" y1=\"26.5\" y2=\"28.93\" fill=\"none\" stroke=\"#000000\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"28.93,43.07 26.52,45.49 26,46\"/>\n    <line x1=\"12\" x2=\"12\" y1=\"14\" y2=\"22\" fill=\"none\" stroke=\"#000000\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <line x1=\"23\" x2=\"14\" y1=\"12\" y2=\"12\" fill=\"none\" stroke=\"#000000\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <path fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"M24.2814,24.4049c3.6326-3.6326,3.934-9.4125,0.8702-13.3997c-0.3699-0.4815-1.0826-0.53-1.512-0.1007L11.0003,23.5439 c-0.4196,0.4196-0.3828,1.1114,0.0737,1.4905C14.9386,28.2441,20.6405,28.0457,24.2814,24.4049z\"/>\n    <path fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"M15.7278,67.7278L4.4142,56.4142c-0.3906-0.3906-0.3906-1.0237,0-1.4143l15.1005-15.1005c0.3905-0.3905,1.0236-0.3905,1.4142,0 l11.3137,11.3137c0.3905,0.3906,0.3905,1.0237,0,1.4142L17.1421,67.7278C16.7515,68.1184,16.1184,68.1184,15.7278,67.7278z\"/>\n    <path fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"M51.2131,32.2426L39.8994,20.9289c-0.3905-0.3905-0.3905-1.0237,0-1.4142L54.9999,4.4142c0.3906-0.3906,1.0237-0.3906,1.4143,0 l11.3136,11.3136c0.3906,0.3906,0.3906,1.0237,0,1.4143L52.6273,32.2426C52.2368,32.6331,51.6036,32.6331,51.2131,32.2426z\"/>\n    <path fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"M51.9203,39.1924L39.1924,51.9203c-0.3905,0.3905-1.0237,0.3905-1.4142,0L23.636,37.7782c-0.3905-0.3905-0.3905-1.0237,0-1.4142 l12.728-12.728c0.3905-0.3905,1.0237-0.3905,1.4142,0l14.1421,14.1422C52.3108,38.1687,52.3108,38.8019,51.9203,39.1924z\"/>\n    <path fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"M36.364,23.636L23.636,36.364c-0.3905,0.3905-1.0237,0.3905-1.4142,0l-4.2426-4.2427c-0.3905-0.3905-0.3905-1.0237,0-1.4142 l12.7279-12.7279c0.3905-0.3905,1.0237-0.3905,1.4142,0l4.2427,4.2426C36.7545,22.6123,36.7545,23.2455,36.364,23.636z\"/>\n    <path fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" d=\"M53.3345,44.8492l-8.4853,8.4853c-0.3905,0.3905-1.0236,0.3905-1.4142,0l-2.1213-2.1213c-0.3905-0.3905-0.3905-1.0237,0-1.4142 l8.4853-8.4853c0.3905-0.3905,1.0237-0.3905,1.4142,0l2.1213,2.1213C53.725,43.8256,53.725,44.4587,53.3345,44.8492z\"/>\n    <ellipse cx=\"12.3223\" cy=\"12.3223\" rx=\"2\" ry=\"2\" transform=\"matrix(0.7071 -0.7071 0.7071 0.7071 -5.1041 12.3223)\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n  </g></g></svg>"
-  },
-  {
-    "id": "planet",
-    "x": 1000,
-    "y": 180,
-    "w": 95,
-    "h": 95,
-    "z": 2,
-    "cls": "obj sticker",
-    "svg": "\n      <svg width=\"95\" height=\"95\" viewBox=\"0 0 72 72\"><g class=\"wob-hover\"><g id=\"color\">\n    <circle cx=\"36.1456\" cy=\"36.4282\" r=\"22.5428\" fill=\"#ea5a47\"/>\n    <path fill=\"#d22f27\" d=\"M52.5238,20.931A22.5441,22.5441,0,0,1,16.2821,47.0757,22.5423,22.5423,0,1,0,52.5238,20.931Z\"/>\n    <path fill=\"#f1b31c\" d=\"M52.7935,22.7551c7.6746-.9256,13.1384-.0236,14.1918,2.8489C68.8256,30.6221,56.51,39.7536,39.4777,46S7.1461,53.2415,5.3059,48.2235c-1.07-2.9183,2.6472-7.2279,9.2958-11.552l.0766,1.5538c-2.5091,2.2523-3.7143,4.3411-3.1382,5.9122,1.4336,3.909,13.3515,3.1334,26.6194-1.7323s22.8616-11.9789,21.428-15.8879c-.5527-1.5073-2.6644-2.3181-5.8112-2.4664Z\"/>\n  </g>\n  <g id=\"line\">\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M17.1562,46.5937A21.5389,21.5389,0,1,1,55.9267,27.9065\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M57.6771,37.1641a21.5552,21.5552,0,0,1-34.892,16.1641\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M52.7935,22.7551c7.6746-.9256,13.1384-.0236,14.1918,2.8489C68.8256,30.6221,56.51,39.7536,39.4777,46S7.1461,53.2415,5.3059,48.2235c-1.07-2.9183,2.6472-7.2279,9.2958-11.552\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M53.7763,24.0509c3.1468.1483,5.2585.9591,5.8112,2.4664,1.4336,3.909-8.16,11.0223-21.428,15.8879S12.9737,48.0465,11.54,44.1375c-.5761-1.5711.6291-3.66,3.1382-5.9122\"/>\n  </g></g></svg>"
-  }
-];
-  const els=[];
-  objects.forEach(o=>{
-    const d=document.createElement('div');
-    d.className=o.cls;d.dataset.id=o.id;
-    d.style.width=o.w+'px';d.style.height=o.h+'px';d.style.zIndex=o.z;
-    d.style.left=o.x+'px';d.style.top=o.y+'px';
-    d.innerHTML=o.svg;
-    stage.appendChild(d);els.push({el:d,home:{x:o.x,y:o.y},id:o.id});
-  });
-  // table + shadow inside the stage so they scale with it
-  const tl=document.createElement('div'),sh=document.createElement('div');
-  tl.style.cssText='position:absolute;left:40px;right:40px;top:272px;height:3px;background:var(--ink);border-radius:99px;opacity:.85';
-  sh.style.cssText='position:absolute;left:60px;right:60px;top:292px;height:14px;background:var(--ink-15);border-radius:50%;filter:blur(2px)';
-  stage.appendChild(tl);stage.appendChild(sh);
-  function fit(){
-    S=Math.min(1,bench.clientWidth/STW);
-    stage.style.transform='scale('+S+')';
-    bench.style.height=(STH*S)+'px';
-  }
-  addEventListener('resize',fit);fit();
-  let drag=null;
-  bench.addEventListener('pointerdown',e=>{
-    const obj=e.target.closest('.obj'); if(!obj)return;
-    const br=bench.getBoundingClientRect();
-    const or=obj.getBoundingClientRect();
-    const tx=(e.clientX-br.left)/S-(or.left-br.left)/S; // grab offset in stage px
-    const ty=(e.clientY-br.top)/S-(or.top-br.top)/S;
-    const baseX=parseFloat(obj.style.left)||0,baseY=parseFloat(obj.style.top)||0;
-    drag={el:obj,tx,ty,br,baseX,baseY};
-    obj.style.zIndex=50;obj.style.transition='none';
-    e.preventDefault();
-  });
-  addEventListener('pointermove',e=>{
-    if(!drag)return;
-    const w=drag.el.offsetWidth,h=drag.el.offsetHeight;
-    let x=(e.clientX-drag.br.left)/S-drag.tx;
-    let y=(e.clientY-drag.br.top)/S-drag.ty;
-    x=Math.max(-w*.25,Math.min(STW-w*.75,x));
-    y=Math.max(-h*.25,Math.min(STH-h*.75,y));
-    drag.el.style.transform='translate('+(x-drag.baseX)+'px,'+(y-drag.baseY)+'px)';
-  },{passive:false});
-  addEventListener('pointerup',()=>{
-    if(!drag)return;
-    const o=objects.find(x=>x.id===drag.el.dataset.id);
-    drag.el.style.zIndex=o.z;drag.el.style.transition='';drag=null;
-  });
-  document.getElementById('resetbench').addEventListener('click',()=>{
-    els.forEach(({el,home})=>{
-      el.style.transform='';el.style.left=home.x+'px';el.style.top=home.y+'px';
-      const o=objects.find(x=>x.id===el.dataset.id);el.style.zIndex=o.z;
+const ICONS={
+  rocket: "<g id=\"color\">\n    <circle cx=\"48.4645\" cy=\"23.7594\" r=\"2.1014\" fill=\"#fff\"/>\n    <path fill=\"#fcea2b\" d=\"m16.12,48.114c-3.1584,3.1634-4.6518,7.5601-3.97,11.688,4.128.6763,8.5223-.8196,11.683-3.977,3.1584-3.1634,4.6518-7.5601,3.97-11.688-4.128-.6763-8.5223.8196-11.683,3.977Z\"/>\n    <path fill=\"#61b2e4\" d=\"m31.973,45.839c-.1919.966-.6657,1.8536-1.3616,2.5507-.3389.3373-.7246.6241-1.1452.8516,2.1626,2.9716,3.7579,6.2847,4.6952,9.7506.7092-.6216,1.3906-1.2786,2.0417-1.9685,1.9136-2.0343,3.5491-4.3376,4.8516-6.8326,1.2507-2.4201,2.1751-4.9922,2.7442-7.6354-3.7285,1.9544-7.7719,3.0771-11.826,3.2837h0Z\"/>\n    <path fill=\"#92d3f5\" d=\"m14.923,35.749c-.69.65-1.3472,1.3303-1.9691,2.0383,3.4682.9313,6.7846,2.521,9.7604,4.6784.2264-.414.5104-.7939.8435-1.1281.6949-.6935,1.5791-1.1665,2.5417-1.3598.2106-4.0507,1.3364-8.0899,3.293-11.814.0019-.0037.0037-.0074.0056-.0112-2.645.5687-5.2188,1.4928-7.6405,2.7434-2.496,1.303-4.7999,2.9389-6.8346,4.853h0Z\"/>\n    <path fill=\"#ea5a47\" d=\"m34.821,20.747c-5.2314,5.2507-8.3665,12.1635-8.7228,19.233,1.6376-.3318,3.3326.1781,4.515,1.3584,1.186,1.1868,1.6956,2.8903,1.356,4.5332,7.0754-.3609,13.9919-3.5024,19.242-8.7398,6.7117-6.7229,9.8843-16.067,8.4337-24.839-1.7318-.2827-3.5044-.3879-5.2915-.3141-7.1741.2926-14.2097,3.4508-19.532,8.7677l-.0004.0006Zm10.249-.5291c1.8412-1.8413,4.8269-1.8418,6.6687-.0012.0004.0004.0008.0008.0012.0012,1.8418,1.8407,1.8424,4.8255.0012,6.6667-.0004.0004-.0008.0008-.0012.0012-1.8419,1.8404-4.8274,1.8398-6.6685-.0014-1.8417-1.8406-1.8424-4.8252-.0014-6.6665Z\"/>\n    <path fill=\"#f1b31c\" d=\"m26.538,52.037c-.8756.9831-1.8894,1.8467-3.0072,2.5617-3.4907,2.2228-7.7244,2.8345-11.441,1.653-.1495,1.1964-.1293,2.3916.06,3.5496,4.128.6763,8.5223-.8195,11.683-3.9769,1.1048-1.1131,2.0209-2.3956,2.7055-3.7874h-.0003Z\"/>\n    <path fill=\"#d22f27\" d=\"m26.204,38.687c-.033.4281-.0559.8558-.0684,1.283,1.6271-.316,3.305.1967,4.4773,1.3682,1.186,1.1868,1.6956,2.8903,1.356,4.5332,7.075-.3618,13.9907-3.5038,19.24-8.7412,1.4932-1.5067,2.8266-3.1619,3.9746-4.9339-1.3472,1.2267-2.8051,2.3344-4.353,3.3074-7.5574,4.7109-16.6938,5.8918-24.627,3.1832h.0005Z\"/>\n    <path fill=\"#61b2e4\" d=\"m24.039,48.551c.8703-.4372,1.7206-.9178,2.5501-1.438,2.4433-1.5323,4.6776-3.4046,6.6294-5.5552l.0028-.0028c1.8803-2.0911,3.4745-4.4187,4.7329-6.9122.061-.1204.0967-.252.1047-.3867-3.3985-.7533-14.846,10.251-14.0199,14.2949h0Z\"/>\n  </g>\n  <g id=\"line\">\n    <path d=\"m48.405,29.49c-3.2761,0-5.941-2.6641-5.941-5.9392s2.6649-5.9392,5.941-5.9392,5.941,2.6641,5.941,5.9392-2.6649,5.9392-5.941,5.9392Zm0-9.8987c-2.1839,0-3.9607,1.7757-3.9607,3.9595s1.7768,3.9595,3.9607,3.9595,3.9607-1.7758,3.9607-3.9595-1.7769-3.9595-3.9607-3.9595Z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.949\" d=\"m20.653,45.063c-1.678.7083-3.2222,1.7475-4.5331,3.0508-3.1581,3.1631-4.6517,7.5594-3.9703,11.687,4.128.6762,8.5221-.8196,11.683-3.9769,1.3043-1.3104,2.3446-2.8541,3.0537-4.5318\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.949\" d=\"m14.923,35.749c-.69.65-1.3472,1.3303-1.9691,2.0383,3.4682.9313,6.7846,2.521,9.7604,4.6784.2264-.414.5104-.7939.8435-1.1281.6949-.6935,1.5791-1.1665,2.5417-1.3598.2106-4.0507,1.3364-8.0899,3.293-11.814.0019-.0037.0037-.0074.0056-.0112-2.645.5687-5.2188,1.4928-7.6405,2.7434-2.496,1.303-4.7999,2.9389-6.8346,4.853h0Z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.949\" d=\"m31.973,45.839c-.1919.966-.6657,1.8536-1.3616,2.5507-.3389.3373-.7246.6241-1.1452.8516,2.1626,2.9716,3.7579,6.2847,4.6952,9.7506.7092-.6216,1.3906-1.2786,2.0417-1.9685,1.9136-2.0343,3.5491-4.3376,4.8516-6.8326,1.2507-2.4201,2.1751-4.9922,2.7442-7.6354-3.7285,1.9544-7.7719,3.0771-11.826,3.2837h0Z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.949\" d=\"m31.83,43.345c.2696.8863.2506,1.6919.1371,2.5245,7.0759-.3611,13.993-3.5031,19.243-8.7412,6.7106-6.7215,9.8836-16.063,8.4351-24.834-8.7712-1.4365-18.108,1.742-24.823,8.4508-5.2322,5.2509-8.3679,12.164-8.7242,19.234.9413-.1907,1.8984-.0942,2.7693.2387\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.949\" d=\"m37.072,34.196h-.0002c-2.4156,1.2183-4.6724,2.7626-6.6996,4.5844-2.0849,1.8911-3.9,4.0556-5.3844,6.4211-.5039.8031-.9684,1.6273-1.3917,2.4694\"/>\n  </g>",
+  cube: "<g id=\"color\">\n    <polygon fill=\"#D0CFCE\" points=\"58.0936,22.6076 35.6729,27.8442 13.9289,22.2732 35.6729,17.4173\"/>\n    <polygon fill=\"#9B9B9A\" points=\"58.2211,48.3473 36.0428,54.1045 35.6729,27.0042 58.1657,21.846\"/>\n    <polygon fill=\"#D0CFCE\" points=\"13.9856,47.957 35.7027,54.1045 35.6729,27.8442 22.6497,24.6986 13.9832,22.2957\"/>\n  </g>\n  <g id=\"hair\"/>\n  <g id=\"skin\"/>\n  <g id=\"skin-shadow\"/>\n  <g id=\"line\">\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2.069\" points=\"35.6352,54.0172 57.4698,48.7313 57.4698,21.7647 35.6167,26.5155 13.7667,21.7647 13.7667,48.7313 35.6013,54.0172 35.6013,30.3713\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2.069\" points=\"13.7667,21.7647 35.8082,16.4545 57.4698,21.7647\"/>\n    <circle cx=\"21.2735\" cy=\"32.9339\" r=\"3\"/>\n    <circle cx=\"27.2446\" cy=\"44.3761\" r=\"3\"/>\n    <circle cx=\"41.767\" cy=\"45.2211\" r=\"3\"/>\n    <circle cx=\"46.8274\" cy=\"38.0668\" r=\"3\"/>\n    <circle cx=\"51.8878\" cy=\"30.9124\" r=\"3\"/>\n    <ellipse cx=\"35.8312\" cy=\"21.1219\" rx=\"4\" ry=\"1.6191\"/>\n  </g>",
+  telescope: "<g id=\"color\">\n    <path fill=\"#3f3f3f\" d=\"m52.3814,18.772l-3.5781-8.2122-6.837,3.3699c.2373-.1073,3.2886,7.6306,3.2886,7.6306.1093.2534,7.1265-2.7883,7.1265-2.7883Z\"/>\n    <path fill=\"#9b9b9a\" d=\"m29.095,27.698l3.8277-1.665c-.0619.0172,12.4053-4.5587,12.4053-4.5587l-3.1999-7.6428-15.205,7.5593,2.1719,6.3072Z\"/>\n    <path fill=\"#9b9b9a\" d=\"m14.6585,27.9833l1.7596,3.9323,13.2103-4.4182-2.4411-6.2384-4.0234,2.1377c.2375-.0993-8.5054,4.5866-8.5054,4.5866Z\"/>\n  </g>\n  <g id=\"line\">\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"16.0186 56.6623 29.1491 36.039 31.624 36.039 43.8948 56.6564\"/>\n    <line x1=\"30.4618\" x2=\"30.4618\" y1=\"36.741\" y2=\"60.257\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"9.7475\" x2=\"11.8352\" y1=\"32.5748\" y2=\"31.7117\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"45.6328 12.1786 48.8033 10.5598 52.3814 18.772 49.2019 19.9125\"/>\n    <line x1=\"26.8219\" x2=\"30.3531\" y1=\"19.924\" y2=\"31.3607\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <circle cx=\"30.3531\" cy=\"31.3607\" r=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"25.028 28.5329 16.1973 31.7319 14.6585 28.1744 23.5457 23.5568\"/>\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"30.9216 19.7807 42.1281 14.0815 45.2549 21.3103 32.6562 25.8289\"/>\n  </g>",
+  planet: "<g id=\"color\">\n    <circle cx=\"36.1456\" cy=\"36.4282\" r=\"22.5428\" fill=\"#ea5a47\"/>\n    <path fill=\"#d22f27\" d=\"M52.5238,20.931A22.5441,22.5441,0,0,1,16.2821,47.0757,22.5423,22.5423,0,1,0,52.5238,20.931Z\"/>\n    <path fill=\"#f1b31c\" d=\"M52.7935,22.7551c7.6746-.9256,13.1384-.0236,14.1918,2.8489C68.8256,30.6221,56.51,39.7536,39.4777,46S7.1461,53.2415,5.3059,48.2235c-1.07-2.9183,2.6472-7.2279,9.2958-11.552l.0766,1.5538c-2.5091,2.2523-3.7143,4.3411-3.1382,5.9122,1.4336,3.909,13.3515,3.1334,26.6194-1.7323s22.8616-11.9789,21.428-15.8879c-.5527-1.5073-2.6644-2.3181-5.8112-2.4664Z\"/>\n  </g>\n  <g id=\"line\">\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M17.1562,46.5937A21.5389,21.5389,0,1,1,55.9267,27.9065\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M57.6771,37.1641a21.5552,21.5552,0,0,1-34.892,16.1641\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M52.7935,22.7551c7.6746-.9256,13.1384-.0236,14.1918,2.8489C68.8256,30.6221,56.51,39.7536,39.4777,46S7.1461,53.2415,5.3059,48.2235c-1.07-2.9183,2.6472-7.2279,9.2958-11.552\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M53.7763,24.0509c3.1468.1483,5.2585.9591,5.8112,2.4664,1.4336,3.909-8.16,11.0223-21.428,15.8879S12.9737,48.0465,11.54,44.1375c-.5761-1.5711.6291-3.66,3.1382-5.9122\"/>\n  </g>",
+  pencil: "<g id=\"color\">\n    <polygon fill=\"#3F3F3F\" stroke=\"none\" points=\"14.5943,53.154 18.2544,56.814 12.6242,59.0928\"/>\n    <polyline fill=\"#f4aa41\" stroke=\"none\" points=\"18.0381,41.8761 36.8684,23.0457 48.1813,34.3586 29.5108,53.0291\"/>\n    <polyline fill=\"#a57939\" stroke=\"none\" points=\"14.4132,52.5663 17.9281,43.3946 27.8278,53.2939 18.6558,56.809\"/>\n    <polyline fill=\"#EA5A47\" stroke=\"none\" points=\"42.9209,16.9933 50.4228,9.4913 61.7357,20.8042 54.2975,28.2424\"/>\n    <polyline fill=\"#9b9b9a\" stroke=\"none\" points=\"35.6498,24.2643 43.3318,16.5823 54.6447,27.8952 47.0278,35.512\"/>\n  </g>\n  <g id=\"hair\"/>\n  <g id=\"skin\"/>\n  <g id=\"skin-shadow\"/>\n  <g id=\"line\">\n    <polygon fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"18.6304,56.8203 27.8278,53.2939 53.8207,27.301 43.9212,17.4015 17.9281,43.3946 14.3904,52.6032\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"47.3354,13.9873 50.8388,10.4839 60.7383,20.3834 57.2645,23.8572\"/>\n    <line x1=\"18.5562\" x2=\"28.4557\" y1=\"42.7665\" y2=\"52.6659\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"14.3979,52.5817 11.9073,59.3148 18.6558,56.809\"/>\n    <line x1=\"36.9099\" x2=\"46.4225\" y1=\"25.0073\" y2=\"34.5199\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n  </g>",
+  floppies: "<g id=\"color\">\n    <rect x=\"11.1359\" y=\"11\" width=\"50\" height=\"50\" fill=\"#3F3F3F\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <polyline fill=\"#D0CFCE\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"56.1359,60 56.1359,35.1616 16.1359,35.1616 16.1359,60\"/>\n    <polyline fill=\"#9B9B9A\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"16.1359,12 16.1359,29.6067 47.0488,29.6067 47.0488,12\"/>\n    <rect x=\"19.9563\" y=\"38.96\" width=\"32.0306\" height=\"5.7713\" fill=\"#61B2E4\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n  </g>\n  <g id=\"hair\"/>\n  <g id=\"skin\"/>\n  <g id=\"skin-shadow\"/>\n  <g id=\"line\">\n    <rect x=\"11.1359\" y=\"11\" width=\"50\" height=\"50\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"56.1359,60 56.1359,35.1616 16.1359,35.1616 16.1359,60\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"16.1359,12 16.1359,29.6067 47.0488,29.6067 47.0488,12\"/>\n    <rect x=\"19.9563\" y=\"38.96\" width=\"32.0306\" height=\"5.7713\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n  </g>",
+  mouse: "<g id=\"color\">\n    <path fill=\"#d0cfce\" d=\"m38.41,11.95h-4.821c-7.25,0-13.18,4.932-13.18,12.18v23.74c0,7.25,5.932,12.18,13.18,12.18h4.821c7.25,0,13.18-4.932,13.18-12.18v-23.74c-.0001-7.25-5.932-12.18-13.18-12.18Z\"/>\n    <path fill=\"#3f3f3f\" d=\"m36.15,17.93h-.3082c-1.407,0-2.558,1.151-2.558,2.558v7.94c0,1.407,1.151,2.558,2.558,2.558h.3082c1.407,0,2.558-1.151,2.558-2.558v-7.94c0-1.407-1.151-2.558-2.558-2.558Z\"/>\n    <path fill=\"#9b9b9a\" d=\"m34.79,12.79c3.959,1.699,7.723,4.137,8.161,10.3.5077,7.135-2.133,20.5-2.982,27.28-.5935,4.745-2.3281,6.4477-5.4441,8.9377-1.571,1.256,6.7008.6745,10.1818-1.3614,2.989-1.747,3.9726-3.4222,5.7914-6.5333l.1283-30.0929s-1.225-9.075-11.2-9.078c0,0-10.01-.5155-4.635.5512l-.0014-.0034Z\"/>\n  </g>\n  <g id=\"line\">\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m36.26,31.12h-.5181c-1.37,0-2.49-1.115-2.49-2.478v-8.126c0-1.363,1.121-2.478,2.49-2.478h.5181c1.37,0,2.49,1.115,2.49,2.478v8.126c0,1.363-1.121,2.478-2.49,2.478Z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m39.61,60.05h-7.215c-6.475,0-11.77-5.263-11.77-11.7v-24.71c0-6.432,5.298-11.7,11.77-11.7h7.215c6.475,0,11.77,5.263,11.77,11.7v24.71c0,6.432-5.298,11.7-11.77,11.7Z\"/>\n  </g>",
+  dish: "<g id=\"color\">\n    <path fill=\"#d0cfce\" d=\"m14.276,31.5192h3.2117l-.0234-1.1721-3.2401.0106c-.0434.3279.0085.8336.0519,1.1615Z\"/>\n    <polygon fill=\"#9b9b9a\" points=\"52.4477 59.999 54.9527 38.197 51.7041 38.197 48.8004 59.999 52.4477 59.999\"/>\n    <path fill=\"#d0cfce\" d=\"m47.6445,29.3771c.0569.5118.0938,1.0293.0938,1.556,0-.5267-.0369-1.0442-.0938-1.556Z\"/>\n    <path fill=\"#d0cfce\" d=\"m48.8004,29.3771c-.4111-3.6953-2.5001-7.7075-5.8095-10.2492-2.6571-2.0407-6.2527-2.9817-9.2531-3.1947l.2712,26.9989c.2486.6495-.3346,2.4231.6547,2.6473,2.0178.4572,6.3562-1.3102,8.0762-2.6473,1.7857-1.3882,3.8837-3.5192,4.9515-6.3317.9164-2.4136.9159-5.4874,1.109-7.2233Z\"/>\n    <path fill=\"#9b9b9a\" d=\"m34.7383,41.7864l-1.2595.1084.259,4.0384c2.2672-.1608,8.4311-2.5655,10.2455-4.0463,2.9667-2.4215,4.7545-5.8777,4.7545-10.9537,0-.5267,0-1.7478-1.0933-1.5561-.7412,6.6622-6.1689,11.9313-12.9062,12.4093Z\"/>\n    <path fill=\"#3f3f3f\" d=\"m52.7421,27.7526l-3.4453-.0401c-.499.189-.6415,5.5357-.0034,6.2814h3.0961s2.7955-.5886,2.4704-3.7291c-.3754-2.5138-1.5545-2.5138-2.1178-2.5122Z\"/>\n  </g>\n  <g id=\"line\">\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m33.7378,45.9332c8.2843,0,15-6.7157,15-15s-6.7157-15-15-15v30Z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m52.6418,27.9625c1.6565.0351,2.9709,1.4064,2.9358,3.0629-.0351,1.6565-1.4064,2.9709-3.0629,2.9358\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m18.4115,32.4905h-4.3872s-.7404.0215-.7404-1.5303.7404-1.5305.7404-1.5305h4.3872v3.0608Z\"/>\n    <line x1=\"24.1309\" x2=\"33.7378\" y1=\"30.9332\" y2=\"30.9332\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"22.1212\" x2=\"33.7378\" y1=\"27.6488\" y2=\"15.9332\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"22.1564\" x2=\"33.7378\" y1=\"34.2741\" y2=\"45.9332\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"40.2378\" x2=\"58.8314\" y1=\"59.999\" y2=\"59.999\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"48.8004 59.999 51.7041 38.197 54.9527 38.197 52.049 59.999\"/>\n  </g>",
+};
+function icon(id,size){ return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 72 72">'+ICONS[id]+'</svg>'; }
+
+const WPOOL=['rocket','cube','telescope','planet','pencil','floppies','mouse','dish'];
+const MPOOL=['rocket','cube','telescope','planet','floppies','dish'];
+const BLURB={
+  whack:"things will pop up on the bench. click them before they vanish.",
+  catch:"things will fall off the shelf. catch them before they hit the table.",
+  memory:"find the pairs. PLUTO is timing your brain, not your hands."
+};
+
+const gstage=document.getElementById('gstage');
+const gscoreEl=document.getElementById('gscore');
+const gtimeEl=document.getElementById('gtime');
+const gtimewrap=document.getElementById('gtimewrap');
+const gstart=document.getElementById('gstart');
+const gmsg=document.getElementById('gmsg');
+const gtabs=[...document.querySelectorAll('.gtab')];
+
+let active='whack', score=0, timeLeft=20, countdownTimer=null, playing=false;
+
+function setScore(t){ gscoreEl.textContent=t; }
+
+/* ---------- whack-a-mole ---------- */
+const whack={spawnTimer:null, pops:new Map()};
+function whackStop(){
+  clearInterval(whack.spawnTimer); whack.spawnTimer=null;
+  whack.pops.forEach((t,el)=>{ clearTimeout(t); el.classList.remove('up'); el.innerHTML=''; });
+  whack.pops.clear();
+}
+function whackBoard(){
+  gstage.innerHTML='<div class="wgrid">'+Array.from({length:6},(_,i)=>'<div class="gslot" data-slot="'+i+'"></div>').join('')+'</div>';
+}
+function whackStart(){
+  whackBoard();
+  const slots=[...gstage.querySelectorAll('.gslot')];
+  slots.forEach(s=>s.addEventListener('click',()=>{
+    if(!s.classList.contains('up'))return;
+    score++; setScore('SCORE '+score);
+    clearTimeout(whack.pops.get(s)); whack.pops.delete(s);
+    s.classList.remove('up'); s.innerHTML='';
+  }));
+  whack.spawnTimer=setInterval(()=>{
+    const free=slots.filter(s=>!s.classList.contains('up'));
+    if(!free.length)return;
+    const s=free[Math.floor(Math.random()*free.length)];
+    const id=WPOOL[Math.floor(Math.random()*WPOOL.length)];
+    s.innerHTML='<div class="gpiece">'+icon(id,44)+'</div>';
+    s.classList.add('up');
+    const t=setTimeout(()=>{ s.classList.remove('up'); s.innerHTML=''; whack.pops.delete(s); },700);
+    whack.pops.set(s,t);
+  },620);
+}
+function reactWhack(s){
+  if(s===0)return "zero. the objects remain undefeated.";
+  if(s<=3)return "a few casualties. mostly yours.";
+  if(s<=7)return "respectable. the dice looked nervous.";
+  if(s<=12)return "okay now you're just showing off.";
+  return "i'm telling the rocket to watch its back.";
+}
+
+/* ---------- catch ---------- */
+const catchG={spawnTimer:null, pieces:new Set()};
+function catchStop(){
+  clearInterval(catchG.spawnTimer); catchG.spawnTimer=null;
+  catchG.pieces.forEach(el=>{clearTimeout(el._t); el.remove();});
+  catchG.pieces.clear();
+}
+function catchBoard(){
+  gstage.innerHTML='<div class="cstage" id="cstage"></div>';
+}
+function catchStart(){
+  catchBoard();
+  const stageEl=document.getElementById('cstage');
+  catchG.spawnTimer=setInterval(()=>{
+    const id=WPOOL[Math.floor(Math.random()*WPOOL.length)];
+    const el=document.createElement('div');
+    el.className='gfall';
+    el.innerHTML=icon(id,42);
+    const maxLeft=Math.max(0, stageEl.clientWidth-46);
+    el.style.left=Math.floor(Math.random()*maxLeft)+'px';
+    el.style.top='-48px';
+    stageEl.appendChild(el);
+    catchG.pieces.add(el);
+    requestAnimationFrame(()=>{
+      el.style.transition='top 2.4s linear';
+      el.style.top=(stageEl.clientHeight+10)+'px';
+    });
+    el.addEventListener('click',()=>{
+      if(!catchG.pieces.has(el))return;
+      score++; setScore('SCORE '+score);
+      catchG.pieces.delete(el); clearTimeout(el._t); el.remove();
+    });
+    el._t=setTimeout(()=>{ catchG.pieces.delete(el); el.remove(); },2500);
+  },780);
+}
+function reactCatch(s){
+  if(s===0)return "you caught nothing. gravity wins again.";
+  if(s<=3)return "a few made it. barely.";
+  if(s<=7)return "solid hands. nothing escapes orbit today.";
+  return "perfect streak. are you even human.";
+}
+
+/* ---------- memory ---------- */
+let mem={openEls:[], moves:0, lock:false, matched:0};
+function memoryStop(){ mem={openEls:[],moves:0,lock:false,matched:0}; }
+function memoryBoard(){
+  let deck=[...MPOOL,...MPOOL];
+  for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+  gstage.innerHTML='<div class="mgrid">'+deck.map((id,idx)=>'<button class="gcard" data-idx="'+idx+'" data-id="'+id+'"><span class="qm">?</span></button>').join('')+'</div>';
+}
+function memoryStart(){
+  memoryBoard();
+  mem={openEls:[],moves:0,lock:false,matched:0};
+  setScore('MOVES 0');
+  gstage.querySelectorAll('.gcard').forEach(card=>{
+    card.addEventListener('click',()=>{
+      if(mem.lock||card.classList.contains('open')||card.classList.contains('matched'))return;
+      card.classList.add('open');
+      card.innerHTML=icon(card.dataset.id,34);
+      mem.openEls.push(card);
+      if(mem.openEls.length===2){
+        mem.moves++; setScore('MOVES '+mem.moves);
+        mem.lock=true;
+        const [a,b]=mem.openEls;
+        if(a.dataset.id===b.dataset.id){
+          a.classList.add('matched'); b.classList.add('matched');
+          mem.openEls=[]; mem.lock=false; mem.matched++;
+          if(mem.matched===MPOOL.length){ endGame('memory'); }
+        } else {
+          setTimeout(()=>{
+            a.classList.remove('open'); a.innerHTML='<span class="qm">?</span>';
+            b.classList.remove('open'); b.innerHTML='<span class="qm">?</span>';
+            mem.openEls=[]; mem.lock=false;
+          },700);
+        }
+      }
     });
   });
+}
+function reactMemory(m){
+  if(m<=8)return "suspiciously good. did you peek?";
+  if(m<=14)return "respectable memory. PLUTO is mildly impressed.";
+  if(m<=22)return "you found them all. eventually.";
+  return "a valiant, chaotic effort.";
+}
+
+/* ---------- controller ---------- */
+function stopAll(){
+  whackStop(); catchStop(); memoryStop();
+  clearInterval(countdownTimer); countdownTimer=null;
+  playing=false;
+}
+function idleState(game){
+  stopAll();
+  gstage.innerHTML='';
+  score=0;
+  if(game==='memory'){ gtimewrap.style.visibility='hidden'; setScore('MOVES 0'); }
+  else { gtimewrap.style.visibility='visible'; gtimeEl.textContent='0:20'; setScore('SCORE 0'); }
+  gstart.textContent='▶ play'; gstart.disabled=false;
+  gmsg.textContent=BLURB[game];
+}
+function startCountdown(onEnd){
+  timeLeft=20; gtimeEl.textContent='0:20';
+  countdownTimer=setInterval(()=>{
+    timeLeft--;
+    gtimeEl.textContent='0:'+String(timeLeft).padStart(2,'0');
+    if(timeLeft<=0){ clearInterval(countdownTimer); countdownTimer=null; onEnd(); }
+  },1000);
+}
+function endGame(game){
+  playing=false;
+  if(game==='whack'){ whackStop(); gmsg.textContent=reactWhack(score); }
+  if(game==='catch'){ catchStop(); gmsg.textContent=reactCatch(score); }
+  if(game==='memory'){ gmsg.textContent=reactMemory(mem.moves); }
+  gstart.textContent='↺ play again'; gstart.disabled=false;
+}
+gtabs.forEach(tab=>tab.addEventListener('click',()=>{
+  gtabs.forEach(t=>{t.classList.remove('on');t.setAttribute('aria-selected','false');});
+  tab.classList.add('on'); tab.setAttribute('aria-selected','true');
+  active=tab.dataset.game;
+  idleState(active);
+}));
+gstart.addEventListener('click',()=>{
+  if(playing)return;
+  playing=true; gstart.disabled=true; score=0;
+  gmsg.textContent='go!';
+  if(active==='whack'){ setScore('SCORE 0'); whackStart(); startCountdown(()=>endGame('whack')); }
+  else if(active==='catch'){ setScore('SCORE 0'); catchStart(); startCountdown(()=>endGame('catch')); }
+  else if(active==='memory'){ memoryStart(); }
+});
+idleState('whack');
+
 })();
 
 </script>
