@@ -4,22 +4,15 @@
 (function(){
   const bar=document.getElementById('bootbar'),msg=document.getElementById('bootmsg'),boot=document.getElementById('boot');
   if(!boot)return;
-  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const lines=['calibrating optics…','loading memory…','PLUTO is regaining consciousness…','uplink stable.'];
+  const lines=['warming up the workbench…','sharpening the pencils…','waking PLUTO…','uplink established.'];
   let p=0,i=0;
   const t=setInterval(()=>{
     p+=Math.random()*22+8; if(p>100)p=100;
     bar.style.width=p+'%';
     const ni=Math.min(lines.length-1,Math.floor(p/28));
     if(ni!==i){i=ni;msg.textContent=lines[i];}
-    if(p>=100){clearInterval(t);clearInterval(flick);setTimeout(()=>boot.classList.add('done'),220);}
+    if(p>=100){clearInterval(t);setTimeout(()=>boot.classList.add('done'),250);}
   },150);
-  const flick=reduce?null:setInterval(()=>{
-    if(Math.random()<.3){
-      boot.classList.add('flicker');
-      setTimeout(()=>boot.classList.remove('flicker'),60+Math.random()*70);
-    }
-  },260);
 })();
 
 /* cockpit HUD frame — corner brackets + readout, every page */
@@ -51,9 +44,9 @@
     ctx.clearRect(0,0,W,H);
     for(const d of dots){
       d.tw+=d.ts*dt/1000;
-      const a=reduce? .35 : .22+.4*Math.abs(Math.sin(d.tw));
+      const a=reduce? .12 : .07+.1*Math.abs(Math.sin(d.tw));
       const px=d.x-mx*20*d.z*devicePixelRatio, py=d.y-my*20*d.z*devicePixelRatio;
-      ctx.beginPath();ctx.arc(px,py,d.r,0,7);ctx.fillStyle=`rgba(219,239,255,${a})`;ctx.fill();
+      ctx.beginPath();ctx.arc(px,py,d.r,0,7);ctx.fillStyle=`rgba(42,59,214,${a})`;ctx.fill();
     }
     requestAnimationFrame(frame);
   }
