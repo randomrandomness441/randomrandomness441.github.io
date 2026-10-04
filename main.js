@@ -15,6 +15,16 @@
   },150);
 })();
 
+/* cockpit HUD frame — corner brackets + readout, every page */
+(function(){
+  const hud=document.createElement('div');
+  hud.className='hudframe';
+  hud.setAttribute('aria-hidden','true');
+  hud.innerHTML='<i class="hc tl"></i><i class="hc tr"></i><i class="hc bl"></i><i class="hc br"></i>'
+    +'<span class="hreadout">UPLINK STABLE · PBD-3.9B KM</span>';
+  document.body.appendChild(hud);
+})();
+
 /* drifting ink specks */
 (function(){
   const cv=document.getElementById('cv'); if(!cv)return;
