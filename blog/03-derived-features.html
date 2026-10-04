@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sourav Singh | The two classes differed by 0.42. The feature I built differed by 0.017.</title>
+<meta name="description" content="A good signal, computed into a bad one. Why subtracting two strong measurements can throw away the exact thing that separated them.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffe6a3'/%3E%3Cpath d='M16 5l4 13h-8z' fill='%232a3bd6'/%3E%3Cpath d='M13 20h6l-3 6z' fill='%23ff9d7a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,500&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<div id="boot" aria-hidden="true">
+  <div>ESTABLISHING UPLINK<span class="blink">_</span></div>
+  <div class="bar"><i id="bootbar"></i></div>
+  <div id="bootmsg">warming up the workbench…</div>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+
+<div id="sky"><canvas id="cv"></canvas></div>
+
+<nav>
+  <a class="stamp" href="../" aria-label="home">
+    <svg width="40" height="40" viewBox="0 0 44 44" aria-hidden="true">
+      <circle cx="22" cy="22" r="19" fill="var(--yellow)" stroke="var(--ink)" stroke-width="2.2" stroke-dasharray="4 3"/>
+      <path d="M22 9l4.5 15h-9z" fill="var(--ink)"/>
+      <path d="M19 25h6l-3 7z" fill="var(--coral)" stroke="var(--ink)" stroke-width="1.4"/>
+    </svg>
+    <span>SOURAV.SINGH</span>
+  </a>
+  <div class="links">
+    <a class="pill p-pink" href="../about.html">About</a>
+    <a class="pill" href="../blog.html" aria-current="page">Blog</a>
+    <a class="pill p-aqua" href="../index.html#projects">Projects</a>
+    <a class="pill p-lav" href="#contact">Contact</a>
+  </div>
+</nav>
+
+<main>
+  <article class="post" style="padding-top:7rem">
+    <div class="pkicker">
+      <span class="no">FUNDA LOG · 03 / 07</span>
+      <span class="src">from building a funda-question generator</span>
+    </div>
+    <h1>The two classes differed by 0.42. The feature I built from it differed by 0.017.</h1>
+    <p class="dek">I had a good signal and I computed it into a bad one.</p>
+
+    <div class="body">
+      <p>For every quiz question I measured how often a small closed-book model could guess the answer. Two versions: from the full question (<code>P_full</code>), and from a stripped-down rewrite of it (<code>P_direct</code>). Then I did what felt like analysis and derived features. <code>clue_lift</code> is <code>P_full − P_direct</code>, how much the clues help. <code>reducibility</code> is <code>P_direct / max(P_full, 0.001)</code>, how much of the question you can throw away. <code>prior_lift</code> is <code>P_full − P_bare</code>, where <code>P_bare</code> is the model's hit rate with no question at all.</p>
+
+      <p>I fit it on 962 labelled questions, 500 from the funda bank and 462 from an OpenTDB trivia dump. These are the effect sizes (Cohen's d, where above 0.8 is large and below 0.2 is negligible):</p>
+
+      <table>
+        <tr><th>signal</th><th>funda</th><th>trivia</th><th>d</th></tr>
+        <tr><td><code>P_direct</code></td><td>0.094</td><td>0.514</td><td><strong>1.09</strong></td></tr>
+        <tr><td><code>P_full</code></td><td>0.200</td><td>0.603</td><td><strong>0.97</strong></td></tr>
+        <tr><td><code>reducibility</code></td><td>9.6 (sd 74)</td><td>21.6 (sd 127)</td><td>0.12</td></tr>
+        <tr><td><code>clue_lift</code></td><td>0.105</td><td>0.088</td><td>0.05</td></tr>
+        <tr><td><code>P_bare</code></td><td>0.000</td><td>0.000</td><td>0.00</td></tr>
+      </table>
+
+      <p>The two raw measurements carry a huge effect. Trivia is much easier to guess than funda, which is the whole premise. The features I built from them carry almost none.</p>
+
+      <p>Look at why subtraction failed, because the arithmetic is small enough to do by hand. Funda drops from 0.200 to 0.094 going from the full question to the stripped one, a loss of 0.106. Trivia drops from 0.603 to 0.514, a loss of 0.089. Both classes lose almost the same amount. They differ in <em>level</em>, by about 0.42, and barely at all in <em>gap</em>. Subtracting throws away level and keeps gap. It's the one operation that discards the thing that separates them. The correlation between <code>P_full</code> and <code>P_direct</code> is 0.74, so they were mostly the same number to begin with.</p>
+
+      <p>The ratio failed for a different reason. When <code>P_full</code> is near zero, the <code>max(..., 0.001)</code> floor in the denominator multiplies whatever noise <code>P_direct</code> has by up to a thousand. The standard deviations came out at roughly ten times the means. The formula's artifact swamped any signal underneath.</p>
+
+      <p>And <code>P_bare</code> is zero for every row in this bank. So <code>prior_lift</code>, which I'd built into the decision tree, is <code>P_full</code> with a longer name.</p>
+
+      <p>The fitted rule that came out was one line:</p>
+
+      <pre><code>TRIVIA if P_direct >= 0.05 else FUNDA</code></pre>
+
+      <table>
+        <tr><th>rule</th><th>accuracy</th></tr>
+        <tr><td>always say funda</td><td>52.0%</td></tr>
+        <tr><td>my hand-set gate (reducibility and lift thresholds)</td><td>71.3%</td></tr>
+        <tr><td><code>P_direct >= 0.05</code></td><td><strong>73.2%</strong></td></tr>
+      </table>
+
+      <p>I tried every AND, OR and max combination of the signals. Each one scored the same or worse than the single threshold.</p>
+
+      <p>A derived feature can't contain information that wasn't in its inputs. It's worth building only if it encodes some real structure, such as removing a confound or putting two scales on the same footing. Neither applied here. I'd taken two good columns and computed two bad ones, and the gate I'd built around them did no better than one threshold.</p>
+
+      <p>Two things I should say about the 73.2%. It was fit against OpenTDB trivia, which is short, Western, and plainly worded, so some of that d of 1.09 may be the same length-and-domain separation I wrote about in the first post. And with four samples per question, a good part of the remaining error is sampling noise.</p>
+
+      <div class="memo"><span class="flag">◆ to fill in before publishing</span>whether you built the gate before or after looking at the distributions, and how long you'd believed in it.</div>
+
+      <p>That was July 27. The same day I wrote the 92.3% judge into the same design doc, which is the first post.</p>
+    </div>
+
+    <div class="post-nav">
+      <a href="02-error-body.html">← read the error body</a>
+      <a class="all" href="../blog.html">all posts</a>
+      <a href="04-the-crop.html">next: the crop was 1,020 pixels wide →</a>
+    </div>
+  </article>
+</main>
+
+<footer id="contact">
+  <p class="big rv">Say hello from your corner<br>of the pale blue dot.</p>
+  <p class="sub rv">The workbench is always listening.</p>
+  <div class="mailrow rv">
+    <a href="mailto:sourav1319singh@gmail.com">sourav1319singh@gmail.com</a>
+    <button id="copymail">COPY ⧉</button>
+  </div>
+  <div class="elsewhere rv">
+    <a class="pill p-pink" href="#" rel="noopener">GitHub ↗</a>
+    <a class="pill" href="#" rel="noopener">LinkedIn ↗</a>
+    <a class="pill p-aqua" href="#" rel="noopener">Resume ↗</a>
+  </div>
+  <p class="signoff rv">Thank you for being here. <b>Keep looking up.</b></p>
+  <p class="credit">illustrations: hand-drawn SVG · emoji stickers: OpenMoji (CC BY-SA 4.0)</p>
+  <a class="top" href="#">BACK TO ORBIT ↑</a>
+</footer>
+
+<div id="modal" role="dialog" aria-modal="true" aria-label="A message">
+  <div class="box">
+    <button id="mclose" aria-label="close">✕</button>
+    <p>"Look again at that dot. That's here. That's home. That's us."</p>
+    <cite>— CARL SAGAN · PALE BLUE DOT · 1994</cite>
+  </div>
+</div>
+
+<script src="../main.js"></script>
+</body>
+</html>

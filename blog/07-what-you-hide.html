@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sourav Singh | What you hide decides what kind of question it is</title>
+<meta name="description" content="Same facts, two questions. One terminates a search, the other makes you build a bridge. The judge called one recall and the other reasoning — and it was right both times.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffe6a3'/%3E%3Cpath d='M16 5l4 13h-8z' fill='%232a3bd6'/%3E%3Cpath d='M13 20h6l-3 6z' fill='%23ff9d7a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,500&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<div id="boot" aria-hidden="true">
+  <div>ESTABLISHING UPLINK<span class="blink">_</span></div>
+  <div class="bar"><i id="bootbar"></i></div>
+  <div id="bootmsg">warming up the workbench…</div>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+
+<div id="sky"><canvas id="cv"></canvas></div>
+
+<nav>
+  <a class="stamp" href="../" aria-label="home">
+    <svg width="40" height="40" viewBox="0 0 44 44" aria-hidden="true">
+      <circle cx="22" cy="22" r="19" fill="var(--yellow)" stroke="var(--ink)" stroke-width="2.2" stroke-dasharray="4 3"/>
+      <path d="M22 9l4.5 15h-9z" fill="var(--ink)"/>
+      <path d="M19 25h6l-3 7z" fill="var(--coral)" stroke="var(--ink)" stroke-width="1.4"/>
+    </svg>
+    <span>SOURAV.SINGH</span>
+  </a>
+  <div class="links">
+    <a class="pill p-pink" href="../about.html">About</a>
+    <a class="pill" href="../blog.html" aria-current="page">Blog</a>
+    <a class="pill p-aqua" href="../index.html#projects">Projects</a>
+    <a class="pill p-lav" href="#contact">Contact</a>
+  </div>
+</nav>
+
+<main>
+  <article class="post" style="padding-top:7rem">
+    <div class="pkicker">
+      <span class="no">FUNDA LOG · 07 / 07</span>
+      <span class="src">from building a funda-question generator</span>
+    </div>
+    <h1>What you hide decides what kind of question it is</h1>
+    <p class="dek">Same facts. Two questions. The judge called one of them recall and the other a reasoning question, and I think it was right both times.</p>
+
+    <div class="body">
+      <p>Same facts. Two questions. The judge called one of them recall and the other a reasoning question, and I think it was right both times.</p>
+
+      <p>The first came out of my question bank:</p>
+
+      <blockquote>According to IMDb, the color scheme of the show was inspired from the movie "Schindler's List" which is based on lives of Jews under gruesome rule of Nazis. The color scheme wants to suggest that the lives of the characters are tasteless. The creator of the show in an interview said that the color scheme was used to convey that the major decisions or morality in the lives of the characters are binary. Put funda.</blockquote>
+
+      <p>The answer is Kota Factory. I read it and called it a funda. The judge said SATISFIES, and when it says that it also hands back an empty derivation. The question gives you Schindler's List and asks you to name a show. Everything in the setup describes the show. Knowing the answer doesn't make any of it click. Either you know which series has that look or you don't.</p>
+
+      <p>I disagreed with it. The color-and-intent story had something in it. So I looked at what the question <em>gives</em> and what it <em>hides</em>. It gives away the mechanism, the inspiration. It hides a name. So I swapped them. State the intent, hide the mechanism:</p>
+
+      <blockquote>The creator of this show wanted to convey that the major decisions and morality in his characters' lives were binary, and that their lives were tasteless and trapped. To achieve this, he borrowed the visual approach of another famous director's film, one that used the same device to represent the lives of its trapped characters. What was the color scheme choice, and which show?</blockquote>
+
+      <p>The judge said EXPLAINS, and its derivation went like this: "'Binary' decisions and morality points to black and white ... the archetypal binary pair and the standard metaphor for moral absolutes ... 'Tasteless' lives suggests absence of color, i.e., a monochrome palette." After that it took "trapped characters" plus "famous director's film" to Schindler's List.</p>
+
+      <p>No new facts. Same show, same inspiration, same intent. The first question terminates a search, and you either land on the answer or you don't. The second makes you build a bridge, from "binary" to black and white to monochrome to a specific film. The answer accounts for the setup, the way "box office" accounts for money kept in a box.</p>
+
+      <p>It's the cleanest pair I have, and it suggests a transform I can run on a pile of recall facts. Anywhere the fact has the shape "X chose Y to achieve Z", give Z and hide Y.</p>
+
+      <p>I'd like to claim the judge has this solved. It doesn't. After I padded trivia questions with neutral facts, 86 of 1,560 still came back EXPLAINS. I read a handful. Take "What name did Tom Hanks give to his volleyball companion in Cast Away?", with a paragraph about a Chicago sports-equipment brand in front of it. The judge said EXPLAINS. I'd call that recall in a costume. Delete the paragraph and the question works exactly as before, which makes the paragraph decoration. I went through six of them by hand and rejected five outright. The sixth I called borderline. The judge gets those wrong in a way I can describe now, which is a different place from where I started.</p>
+
+      <div class="memo"><span class="flag">◆ to fill in before publishing — this one has to be yours</span>if you've settled on a definition of a funda, put it here in one or two sentences.</div>
+    </div>
+
+    <div class="post-nav">
+      <a href="06-taxonomy.html">← 107 clusters, 93 with one question</a>
+      <a class="all" href="../blog.html">all posts</a>
+      <span></span>
+    </div>
+  </article>
+</main>
+
+<footer id="contact">
+  <p class="big rv">Say hello from your corner<br>of the pale blue dot.</p>
+  <p class="sub rv">The workbench is always listening.</p>
+  <div class="mailrow rv">
+    <a href="mailto:sourav1319singh@gmail.com">sourav1319singh@gmail.com</a>
+    <button id="copymail">COPY ⧉</button>
+  </div>
+  <div class="elsewhere rv">
+    <a class="pill p-pink" href="#" rel="noopener">GitHub ↗</a>
+    <a class="pill" href="#" rel="noopener">LinkedIn ↗</a>
+    <a class="pill p-aqua" href="#" rel="noopener">Resume ↗</a>
+  </div>
+  <p class="signoff rv">Thank you for being here. <b>Keep looking up.</b></p>
+  <p class="credit">illustrations: hand-drawn SVG · emoji stickers: OpenMoji (CC BY-SA 4.0)</p>
+  <a class="top" href="#">BACK TO ORBIT ↑</a>
+</footer>
+
+<div id="modal" role="dialog" aria-modal="true" aria-label="A message">
+  <div class="box">
+    <button id="mclose" aria-label="close">✕</button>
+    <p>"Look again at that dot. That's here. That's home. That's us."</p>
+    <cite>— CARL SAGAN · PALE BLUE DOT · 1994</cite>
+  </div>
+</div>
+
+<script src="../main.js"></script>
+</body>
+</html>

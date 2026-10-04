@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sourav Singh | The crop was 1,020 pixels wide. The videos were 1,280.</title>
+<meta name="description" content="Six stages of automated checking passed corrupted data, because every one of them compared the pipeline's own output to itself.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffe6a3'/%3E%3Cpath d='M16 5l4 13h-8z' fill='%232a3bd6'/%3E%3Cpath d='M13 20h6l-3 6z' fill='%23ff9d7a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,500&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<div id="boot" aria-hidden="true">
+  <div>ESTABLISHING UPLINK<span class="blink">_</span></div>
+  <div class="bar"><i id="bootbar"></i></div>
+  <div id="bootmsg">warming up the workbench…</div>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+
+<div id="sky"><canvas id="cv"></canvas></div>
+
+<nav>
+  <a class="stamp" href="../" aria-label="home">
+    <svg width="40" height="40" viewBox="0 0 44 44" aria-hidden="true">
+      <circle cx="22" cy="22" r="19" fill="var(--yellow)" stroke="var(--ink)" stroke-width="2.2" stroke-dasharray="4 3"/>
+      <path d="M22 9l4.5 15h-9z" fill="var(--ink)"/>
+      <path d="M19 25h6l-3 7z" fill="var(--coral)" stroke="var(--ink)" stroke-width="1.4"/>
+    </svg>
+    <span>SOURAV.SINGH</span>
+  </a>
+  <div class="links">
+    <a class="pill p-pink" href="../about.html">About</a>
+    <a class="pill" href="../blog.html" aria-current="page">Blog</a>
+    <a class="pill p-aqua" href="../index.html#projects">Projects</a>
+    <a class="pill p-lav" href="#contact">Contact</a>
+  </div>
+</nav>
+
+<main>
+  <article class="post" style="padding-top:7rem">
+    <div class="pkicker">
+      <span class="no">FUNDA LOG · 04 / 07</span>
+      <span class="src">from building a funda-question generator</span>
+    </div>
+    <h1>The crop was 1,020 pixels wide. The videos were 1,280.</h1>
+    <p class="dek">I'd read that number off a single frame of a single video. Every video was 1,280 wide.</p>
+
+    <div class="body">
+      <p>I was pulling quiz questions out of recorded video sessions. A quizmaster runs a deck over a call, each question is a slide, and a vision model reads the slide. To find where slides change I compare frames, and for that I cropped out the edges of the screen. The crop lived in the code as one line:</p>
+
+      <pre><code>CROP = (0, 0, 1020, 720)</code></pre>
+
+      <p>I'd read that number off a single frame of a single video. Every video was 1,280 wide.</p>
+
+      <p>Any slide whose text ran past x=1,020 lost its right edge. Here's what the pipeline produced, next to what was on the slide:</p>
+
+      <pre><code>"the son of the director g of"     the slide: director general
+"such as a Lond where"             the slide: a London pub
+"do permit photography"            the slide: does NOT permit
+(missing entirely)                 the slide: "He was really tall (6'10&quot;)"</code></pre>
+
+      <p>The third is the worst of them. A clipped word is easy to spot. An inverted meaning isn't, because "do permit photography" is a perfectly good sentence. And the fourth question turned on the height. The clue was gone and nothing downstream knew it had ever been there.</p>
+
+      <p>Damage reached 88% of one video's questions, and I'd frozen a benchmark out of this data.</p>
+
+      <p>Six stages of checking passed all of it. That's the part worth dwelling on. Every guard I had compared one artifact to another artifact. The verbatim check asks whether the answer appears on the slide it names, and it did, on the clipped slide. The pairing check ran on the clipped text. The two representations agreed with each other perfectly because both came from the same broken input. Internal consistency can't see corrupted input. You need at least one check that reaches outside the system, whether that's the source image, a different method, or a person looking at it.</p>
+
+      <div class="memo"><span class="flag">◆ to fill in before publishing</span>how you actually caught it, and what you were looking at when you did.</div>
+
+      <p>The damage checker was wrong too. When I first measured how much of the gold set was clipped, it said 42%. A check on its own flags showed that 8 of 20 were possessives, "Gandhi's" and "the band's", where the apostrophe made my stray-letter rule see a lone "s". Without those, the rate was nearer 25%. I'd also reported a correlation built on that inflated number, and it inverted once I measured it properly: the claim that failed questions carried 9x more damage did not hold up.</p>
+
+      <p>The fix was small. The crop had three jobs, and only two of them needed it. Comparing frames for scene detection and for dedup still uses the cropped region. Stored frames are the whole frame. After regenerating the gold set on full-width frames, damage went from 88% to 4%.</p>
+
+      <p>Four measurements I'd taken before the fix are void, and I deleted them instead of reinterpreting them. The judge's 60% score on the gold set, which I'd read as the judge underperforming. A 7-of-12 instability result. The 9x correlation. And an analysis of question types. All four were built on damaged text.</p>
+
+      <p>The number to remember isn't 1,020. It's six: six stages that agreed with each other about corrupted input.</p>
+    </div>
+
+    <div class="post-nav">
+      <a href="03-derived-features.html">← two good columns, two bad ones</a>
+      <a class="all" href="../blog.html">all posts</a>
+      <a href="05-the-web-is-the-hook.html">next: models know the headline →</a>
+    </div>
+  </article>
+</main>
+
+<footer id="contact">
+  <p class="big rv">Say hello from your corner<br>of the pale blue dot.</p>
+  <p class="sub rv">The workbench is always listening.</p>
+  <div class="mailrow rv">
+    <a href="mailto:sourav1319singh@gmail.com">sourav1319singh@gmail.com</a>
+    <button id="copymail">COPY ⧉</button>
+  </div>
+  <div class="elsewhere rv">
+    <a class="pill p-pink" href="#" rel="noopener">GitHub ↗</a>
+    <a class="pill" href="#" rel="noopener">LinkedIn ↗</a>
+    <a class="pill p-aqua" href="#" rel="noopener">Resume ↗</a>
+  </div>
+  <p class="signoff rv">Thank you for being here. <b>Keep looking up.</b></p>
+  <p class="credit">illustrations: hand-drawn SVG · emoji stickers: OpenMoji (CC BY-SA 4.0)</p>
+  <a class="top" href="#">BACK TO ORBIT ↑</a>
+</footer>
+
+<div id="modal" role="dialog" aria-modal="true" aria-label="A message">
+  <div class="box">
+    <button id="mclose" aria-label="close">✕</button>
+    <p>"Look again at that dot. That's here. That's home. That's us."</p>
+    <cite>— CARL SAGAN · PALE BLUE DOT · 1994</cite>
+  </div>
+</div>
+
+<script src="../main.js"></script>
+</body>
+</html>

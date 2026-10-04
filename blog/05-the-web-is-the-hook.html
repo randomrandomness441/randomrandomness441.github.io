@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sourav Singh | Models know the headline and miss the hook</title>
+<meta name="description" content="49% recall from memory alone, two LLMs failing on the same items with total confidence, and what it cost to get the real number up to 92%.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffe6a3'/%3E%3Cpath d='M16 5l4 13h-8z' fill='%232a3bd6'/%3E%3Cpath d='M13 20h6l-3 6z' fill='%23ff9d7a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,500&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<div id="boot" aria-hidden="true">
+  <div>ESTABLISHING UPLINK<span class="blink">_</span></div>
+  <div class="bar"><i id="bootbar"></i></div>
+  <div id="bootmsg">warming up the workbench…</div>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+
+<div id="sky"><canvas id="cv"></canvas></div>
+
+<nav>
+  <a class="stamp" href="../" aria-label="home">
+    <svg width="40" height="40" viewBox="0 0 44 44" aria-hidden="true">
+      <circle cx="22" cy="22" r="19" fill="var(--yellow)" stroke="var(--ink)" stroke-width="2.2" stroke-dasharray="4 3"/>
+      <path d="M22 9l4.5 15h-9z" fill="var(--ink)"/>
+      <path d="M19 25h6l-3 7z" fill="var(--coral)" stroke="var(--ink)" stroke-width="1.4"/>
+    </svg>
+    <span>SOURAV.SINGH</span>
+  </a>
+  <div class="links">
+    <a class="pill p-pink" href="../about.html">About</a>
+    <a class="pill" href="../blog.html" aria-current="page">Blog</a>
+    <a class="pill p-aqua" href="../index.html#projects">Projects</a>
+    <a class="pill p-lav" href="#contact">Contact</a>
+  </div>
+</nav>
+
+<main>
+  <article class="post" style="padding-top:7rem">
+    <div class="pkicker">
+      <span class="no">FUNDA LOG · 05 / 07</span>
+      <span class="src">from building a funda-question generator</span>
+    </div>
+    <h1>Models know the headline and miss the hook</h1>
+    <p class="dek">49%. That's how often a model could recall the one fact a quiz question turns on, with no search at all.</p>
+
+    <div class="body">
+      <p>49%. That's how often glm-4.5-air could recall the one fact a quiz question turns on, with no search at all. Llama-3.3-70B got 47%.</p>
+
+      <p>A funda is built around a hook, the hidden fact you have to reach. The headline is the famous part everyone knows. To generate questions from articles I needed contexts that actually contained the hook, so the first thing to settle was whether a model could supply it from memory. I tested it against facts I'd verified with an independent web search:</p>
+
+      <table>
+        <tr><th>approach</th><th>recall of the hook fact</th></tr>
+        <tr><td>glm-4.5-air, knowledge only</td><td>49% (n=12)</td></tr>
+        <tr><td>llama-3.3-70b, knowledge only</td><td>47% (n=12)</td></tr>
+        <tr><td>z.ai native web search, thinking on</td><td>21% (n=6)</td></tr>
+        <tr><td>z.ai native web search, thinking off</td><td>37% (n=6)</td></tr>
+        <tr><td>Google-backed search</td><td>~92% (11 of 12 full chains)</td></tr>
+      </table>
+
+      <p>Those are tiny samples, 12 and 6. Read them as a direction. The gap is big enough that the pipeline runs on the search.</p>
+
+      <p>The two LLMs failed on the same items, so a bigger model wasn't going to fix it. And they didn't fail quietly. I asked about Gopal Bhand, an 18th-century Bengali jester from Krishnanagar. z.ai answered "Kolhapur, Maharashtra, Marathi folklore." Groq answered "16th-century Bhakti poet from Mithila, Maithili." Different answers, both delivered with complete confidence.</p>
+
+      <p>Turning the model's thinking off made its search score higher and its data worse. With search failing, the no-thinking version fell back on what it half-remembered instead of saying it didn't know (it admitted the gap in 3 of 6 runs with thinking on, 0 of 6 with it off). And z.ai's own search index, asked about "Project Sunrise", returned a Japanese animation studio. I was after the Qantas flight project.</p>
+
+      <p>The thing that worked costs about $2: roughly 1,858 searches on Serper at a dollar per thousand.</p>
+
+      <p>Finding the article was half of it. The other half is finding the passage inside it, and that's where I spent the time. I tried three clever things.</p>
+
+      <p>Sentence embeddings: the same fact scored 0.82 cosine similarity against its paraphrase and different facts scored 0.79. Embedding models see topic, and every passage of an article is about the same topic. A cross-encoder trained for entailment: it scored a 500-character hook at a median of 0.01 and the same model gave 0.998 on a single claim, because entailment is atomic and the hook has many facts in it. Gzip distance: it couldn't tell padded trivia from real funda.</p>
+
+      <p>What beat all three was counting. Take the distinctive terms in the hook and measure what fraction of them show up in the passage. That moved source-finding from 0.25 to 0.60.</p>
+
+      <p>A decomposition helped on top. Splitting a question into three to six factual threads and searching each one separately found a source nothing else had: a blog post called an A to Z of Bengali fish. Fourteen URLs across all the threads, one of which served two of them. The threads really do need different sources.</p>
+
+      <p>Then I handed the whole job to a local 8B model. It writes a search query, reads the results, picks one, extracts the page, scores the match, and if the score is weak it tries again with a <em>different angle</em>, informed by what the last attempt returned. The retry is there for a measured reason. The fundas I couldn't source on the first try skewed 80% hard, against 51% for the bank overall, because hard fundas are built from material that doesn't surface on the first obvious search. One attempt biases the dataset toward the easy questions.</p>
+
+      <p>There's still a ceiling. About 19% of the bank's question-and-answer pairs use knowledge that no article I found contains.</p>
+
+      <p>All of this matters because of what the generator had been trained on. The training hooks were LLM summaries, and when I measured them, a summary held a median of 0.22 of the question's facts. The article it came from held 0.67. So the model learned to write a question from a context holding a fifth of what the question needed. The only way to imitate that is to make up the rest, and it did. That's a data defect, and I'd been looking at the model.</p>
+
+      <p>The fix is to cut the hook out of the article word for word. That's next. It hasn't run yet.</p>
+    </div>
+
+    <div class="post-nav">
+      <a href="04-the-crop.html">← the crop was 1,020 pixels wide</a>
+      <a class="all" href="../blog.html">all posts</a>
+      <a href="06-taxonomy.html">next: 107 clusters, 93 with one question →</a>
+    </div>
+  </article>
+</main>
+
+<footer id="contact">
+  <p class="big rv">Say hello from your corner<br>of the pale blue dot.</p>
+  <p class="sub rv">The workbench is always listening.</p>
+  <div class="mailrow rv">
+    <a href="mailto:sourav1319singh@gmail.com">sourav1319singh@gmail.com</a>
+    <button id="copymail">COPY ⧉</button>
+  </div>
+  <div class="elsewhere rv">
+    <a class="pill p-pink" href="#" rel="noopener">GitHub ↗</a>
+    <a class="pill" href="#" rel="noopener">LinkedIn ↗</a>
+    <a class="pill p-aqua" href="#" rel="noopener">Resume ↗</a>
+  </div>
+  <p class="signoff rv">Thank you for being here. <b>Keep looking up.</b></p>
+  <p class="credit">illustrations: hand-drawn SVG · emoji stickers: OpenMoji (CC BY-SA 4.0)</p>
+  <a class="top" href="#">BACK TO ORBIT ↑</a>
+</footer>
+
+<div id="modal" role="dialog" aria-modal="true" aria-label="A message">
+  <div class="box">
+    <button id="mclose" aria-label="close">✕</button>
+    <p>"Look again at that dot. That's here. That's home. That's us."</p>
+    <cite>— CARL SAGAN · PALE BLUE DOT · 1994</cite>
+  </div>
+</div>
+
+<script src="../main.js"></script>
+</body>
+</html>

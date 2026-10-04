@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sourav Singh | Read the error body, not the status code</title>
+<meta name="description" content="Every call came back 429. I diagnosed it four times before reading a single response body, and all four diagnoses were wrong.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffe6a3'/%3E%3Cpath d='M16 5l4 13h-8z' fill='%232a3bd6'/%3E%3Cpath d='M13 20h6l-3 6z' fill='%23ff9d7a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,500&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<div id="boot" aria-hidden="true">
+  <div>ESTABLISHING UPLINK<span class="blink">_</span></div>
+  <div class="bar"><i id="bootbar"></i></div>
+  <div id="bootmsg">warming up the workbench…</div>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+
+<div id="sky"><canvas id="cv"></canvas></div>
+
+<nav>
+  <a class="stamp" href="../" aria-label="home">
+    <svg width="40" height="40" viewBox="0 0 44 44" aria-hidden="true">
+      <circle cx="22" cy="22" r="19" fill="var(--yellow)" stroke="var(--ink)" stroke-width="2.2" stroke-dasharray="4 3"/>
+      <path d="M22 9l4.5 15h-9z" fill="var(--ink)"/>
+      <path d="M19 25h6l-3 7z" fill="var(--coral)" stroke="var(--ink)" stroke-width="1.4"/>
+    </svg>
+    <span>SOURAV.SINGH</span>
+  </a>
+  <div class="links">
+    <a class="pill p-pink" href="../about.html">About</a>
+    <a class="pill" href="../blog.html" aria-current="page">Blog</a>
+    <a class="pill p-aqua" href="../index.html#projects">Projects</a>
+    <a class="pill p-lav" href="#contact">Contact</a>
+  </div>
+</nav>
+
+<main>
+  <article class="post" style="padding-top:7rem">
+    <div class="pkicker">
+      <span class="no">FUNDA LOG · 02 / 07</span>
+      <span class="src">from building a funda-question generator</span>
+    </div>
+    <h1>Read the error body, not the status code</h1>
+    <p class="dek">Every call to the model came back 429. I diagnosed it four times before I read a single response body. All four diagnoses were wrong.</p>
+
+    <div class="body">
+      <p>The setup is plain. A pipeline calls glm-4.5-air thousands of times, and it started failing on everything. HTTP 429 means too many requests, so I treated it as throttling and the retry logic did what retry logic does: exponential backoff, doubled on rate limits, up to 30 seconds a wait, five retries per call.</p>
+
+      <p>In order, the theories were heavy use, four concurrent processes each honouring an in-process cap of four, a concurrency breach, and a per-process semaphore that couldn't see the other processes. None of that was stupid. I'd measured this provider's limits earlier: glm-4.7 handled two concurrent requests fine, gave back 429s on half of them at three, and on 80% at five. The concurrency theory had data behind it. It was just aimed at the wrong problem.</p>
+
+      <p>What the response actually said:</p>
+
+      <pre><code>{"error":{"code":"1113","message":"Insufficient balance or no resource package. Please recharge."}}</code></pre>
+
+      <p>The account was empty. The status code is 429 whether the server is saying "slow down" or "you have no money", and nothing in my stack had ever opened the body to check which.</p>
+
+      <p>The retries were the cheap part: five of them at up to 30 seconds each, against an account that could never have succeeded. The expensive part was what got recorded. Two experiments logged results of 0 out of 8. They were really 0 out of 8 calls that reached the model. One got written up as a dead end and closed.</p>
+
+      <p>The tell had been sitting there. The clean arm of that experiment also scored 0/8. Identical zeros in both arms means nothing ran. I'd also been bitten by the cousin of this earlier, when a 429 got stored as "the model answered wrong" and dragged a measured hit rate on trivia down to 0.31 when it should have read about 0.52.</p>
+
+      <div class="memo"><span class="flag">◆ to fill in before publishing</span>how long this ate, and which of the four theories you were most sure about.</div>
+
+      <p>The fix is a separate exception class, <code>ProviderExhausted</code>, raised on the first call when the body contains the provider's own wording ("insufficient balance", "no resource package", the 1113 code). A transient 429 still retries. I checked both directions: a throttle retries, an empty account stops immediately.</p>
+
+      <p>About an hour after that commit I found why the account was empty in the first place. I had a GLM Coding subscription, and it covers <code>/api/coding/paas/v4/</code>. Every call in the project had been going to <code>/api/paas/v4/</code>, which bills from a separate pay-as-you-go balance. Same key, same models, wrong URL. The subscription had been paying for an endpoint I never called. (The OCR endpoint isn't covered by the subscription at all, and fails on both.)</p>
+
+      <p>I wrote a design doc for the rest. One registry for providers instead of provider knowledge scattered across six files. Limits that nest, because a per-model semaphore can't express "the account is empty." Roles instead of model names, with some roles frozen because their calibration depends on a specific model and others free to fall back. A health state shared on disk so one process finding an empty account spares the others. A cross-process token bucket. All of that is on paper and marked "design, not built." What's in the code is the 429 split, plus the concurrency caps.</p>
+
+      <p>What each response should trigger (the first two rows and the last are in the code, the rest are in the doc):</p>
+
+      <table>
+        <tr><th>the response says</th><th>what to do</th></tr>
+        <tr><td>429, throttle wording</td><td>back off, retry the same model</td></tr>
+        <tr><td>429, balance or quota wording</td><td>mark the provider dead, stop</td></tr>
+        <tr><td>404, model not found</td><td>fail loudly, never fall back silently</td></tr>
+        <tr><td>401 or 403</td><td>fail loudly</td></tr>
+        <tr><td>5xx, timeout</td><td>retry</td></tr>
+        <tr><td>output cut off at max_tokens</td><td>raise, never retry (it will cut off in the same place)</td></tr>
+      </table>
+
+      <p>The last row is its own story. Thinking tokens come out of the same budget as the answer, and I lost three slide transcripts that way before the code learned to raise instead of returning a shorter string.</p>
+
+      <p>Read the body.</p>
+    </div>
+
+    <div class="post-nav">
+      <a href="01-judge-92-vs-91.html">← the 92.3% judge</a>
+      <a class="all" href="../blog.html">all posts</a>
+      <a href="03-derived-features.html">next: two good columns, two bad ones →</a>
+    </div>
+  </article>
+</main>
+
+<footer id="contact">
+  <p class="big rv">Say hello from your corner<br>of the pale blue dot.</p>
+  <p class="sub rv">The workbench is always listening.</p>
+  <div class="mailrow rv">
+    <a href="mailto:sourav1319singh@gmail.com">sourav1319singh@gmail.com</a>
+    <button id="copymail">COPY ⧉</button>
+  </div>
+  <div class="elsewhere rv">
+    <a class="pill p-pink" href="#" rel="noopener">GitHub ↗</a>
+    <a class="pill" href="#" rel="noopener">LinkedIn ↗</a>
+    <a class="pill p-aqua" href="#" rel="noopener">Resume ↗</a>
+  </div>
+  <p class="signoff rv">Thank you for being here. <b>Keep looking up.</b></p>
+  <p class="credit">illustrations: hand-drawn SVG · emoji stickers: OpenMoji (CC BY-SA 4.0)</p>
+  <a class="top" href="#">BACK TO ORBIT ↑</a>
+</footer>
+
+<div id="modal" role="dialog" aria-modal="true" aria-label="A message">
+  <div class="box">
+    <button id="mclose" aria-label="close">✕</button>
+    <p>"Look again at that dot. That's here. That's home. That's us."</p>
+    <cite>— CARL SAGAN · PALE BLUE DOT · 1994</cite>
+  </div>
+</div>
+
+<script src="../main.js"></script>
+</body>
+</html>

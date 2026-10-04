@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sourav Singh | 107 clusters, 93 of them with one question</title>
+<meta name="description" content="Letting the data propose a taxonomy of how quiz questions hide their answer, instead of writing a list of types and hoping it covers things.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffe6a3'/%3E%3Cpath d='M16 5l4 13h-8z' fill='%232a3bd6'/%3E%3Cpath d='M13 20h6l-3 6z' fill='%23ff9d7a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,500&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<div id="boot" aria-hidden="true">
+  <div>ESTABLISHING UPLINK<span class="blink">_</span></div>
+  <div class="bar"><i id="bootbar"></i></div>
+  <div id="bootmsg">warming up the workbench…</div>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+
+<div id="sky"><canvas id="cv"></canvas></div>
+
+<nav>
+  <a class="stamp" href="../" aria-label="home">
+    <svg width="40" height="40" viewBox="0 0 44 44" aria-hidden="true">
+      <circle cx="22" cy="22" r="19" fill="var(--yellow)" stroke="var(--ink)" stroke-width="2.2" stroke-dasharray="4 3"/>
+      <path d="M22 9l4.5 15h-9z" fill="var(--ink)"/>
+      <path d="M19 25h6l-3 7z" fill="var(--coral)" stroke="var(--ink)" stroke-width="1.4"/>
+    </svg>
+    <span>SOURAV.SINGH</span>
+  </a>
+  <div class="links">
+    <a class="pill p-pink" href="../about.html">About</a>
+    <a class="pill" href="../blog.html" aria-current="page">Blog</a>
+    <a class="pill p-aqua" href="../index.html#projects">Projects</a>
+    <a class="pill p-lav" href="#contact">Contact</a>
+  </div>
+</nav>
+
+<main>
+  <article class="post" style="padding-top:7rem">
+    <div class="pkicker">
+      <span class="no">FUNDA LOG · 06 / 07</span>
+      <span class="src">from building a funda-question generator</span>
+    </div>
+    <h1>107 clusters, 93 of them with one question</h1>
+    <p class="dek">I wanted to label questions by how they hide their answer, so I let the data propose the types instead of writing a list and hoping it covers things.</p>
+
+    <div class="body">
+      <p>I wanted to label quiz questions by how they hide their answer, so I'd have something to condition a generator on. The obvious way is to write a list of types and hope it covers things. I went the other way and let the data propose them. I took 200 questions, had an LLM describe in free text how each one is built, embedded the descriptions, and clustered them.</p>
+
+      <p>The first pass asked for specific descriptions. It produced 107 clusters, and 93 of them had a single question in them. Useless. Nothing to train on, and nothing you could call a type.</p>
+
+      <p>The second pass asked for coarse families instead of specific descriptions. That produced seven. They cover 88% of the sample and no family holds more than 18% of it, so every type has enough examples to learn from:</p>
+
+      <table>
+        <tr><th>type</th><th>the answer is hidden how</th></tr>
+        <tr><td>clue-chain</td><td>descriptive clues accumulate until one answer fits</td></tr>
+        <tr><td>name-wordplay</td><td>the answer is in the name: an acronym, a pun, an etymology</td></tr>
+        <tr><td>origin-story</td><td>how a thing came to be, or got its name</td></tr>
+        <tr><td>connect</td><td>several items are named and the answer is what links them</td></tr>
+        <tr><td>masked-blank</td><td>a blank or an X marks the answer inside a passage</td></tr>
+        <tr><td>misleading-frame</td><td>the surface reading points the wrong way</td></tr>
+        <tr><td>quote-excerpt</td><td>built around a quotation, a review, or an excerpt</td></tr>
+      </table>
+
+      <p>Running that over the bank (1,858 questions), the primary labels land like this: clue-chain 654, origin-story 492, name-wordplay 354, connect 122, masked-blank 90, quote-excerpt 81, misleading-frame 57, other 8. There are 2,312 labels in total, because real fundas stack mechanisms. The example in the prompt is the Taser. Jack Cover worked at NASA, diverted funds, and named his invention after a boy's adventure book: how it was invented (origin-story), the acronym (name-wordplay), and details that accumulate (clue-chain). One question, three types.</p>
+
+      <div class="memo"><span class="flag">◆ to fill in before publishing</span>which of the seven surprised you, if any.</div>
+
+      <p>The coarse pass worked because the first pass had been asking the wrong thing. Specific descriptions are unique by nature, so of course they don't cluster. The right grain of description is the one where several questions can share a label and each label still has a handful of items to learn from.</p>
+
+      <p>There's a trap in this taxonomy that I found by running it on the wrong data. It assumes the question is already a funda, so it has no label for "none of these." I ran it over the OpenTDB trivia dump to see what would happen. 62% came back clue-chain and 0% came back other. It has to pick something. That's why the funda-versus-trivia question has to be asked first, by something else, and why this classifier can't be that something else.</p>
+
+      <p>Two more things came out of using the types as a generator knob. You can't demand a type from an article that doesn't contain one. A page with no interesting name has no name-wordplay question in it to find. So the type has to be something the hook-finding step <em>reports</em>, rather than something you hand it. And once you're generating per type, the cheap check is to run the classifier on what came out. If you asked for connect and it says clue-chain, you didn't get what you asked for.</p>
+
+      <p>I've only run this on quiz questions. The method doesn't care what the items are. Anything where you want a set of types, and don't have one you trust, could go through the same two passes.</p>
+
+      <div class="memo"><span class="flag">◆ optional — only if you build it, and only once it's actually run</span>the same method on LeetCode problems, described by the approach they need rather than the topic they're tagged with.</div>
+    </div>
+
+    <div class="post-nav">
+      <a href="05-the-web-is-the-hook.html">← models know the headline</a>
+      <a class="all" href="../blog.html">all posts</a>
+      <a href="07-what-you-hide.html">next: what you hide decides the question →</a>
+    </div>
+  </article>
+</main>
+
+<footer id="contact">
+  <p class="big rv">Say hello from your corner<br>of the pale blue dot.</p>
+  <p class="sub rv">The workbench is always listening.</p>
+  <div class="mailrow rv">
+    <a href="mailto:sourav1319singh@gmail.com">sourav1319singh@gmail.com</a>
+    <button id="copymail">COPY ⧉</button>
+  </div>
+  <div class="elsewhere rv">
+    <a class="pill p-pink" href="#" rel="noopener">GitHub ↗</a>
+    <a class="pill" href="#" rel="noopener">LinkedIn ↗</a>
+    <a class="pill p-aqua" href="#" rel="noopener">Resume ↗</a>
+  </div>
+  <p class="signoff rv">Thank you for being here. <b>Keep looking up.</b></p>
+  <p class="credit">illustrations: hand-drawn SVG · emoji stickers: OpenMoji (CC BY-SA 4.0)</p>
+  <a class="top" href="#">BACK TO ORBIT ↑</a>
+</footer>
+
+<div id="modal" role="dialog" aria-modal="true" aria-label="A message">
+  <div class="box">
+    <button id="mclose" aria-label="close">✕</button>
+    <p>"Look again at that dot. That's here. That's home. That's us."</p>
+    <cite>— CARL SAGAN · PALE BLUE DOT · 1994</cite>
+  </div>
+</div>
+
+<script src="../main.js"></script>
+</body>
+</html>
