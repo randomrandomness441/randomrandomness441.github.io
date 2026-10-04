@@ -1,6 +1,6 @@
 /* Sourav's workbench — shared styles (riso aesthetic) */
 :root{
-  --paper:#fffdf6; --paper-2:#fbf7ea;
+  --paper:#fffefb; --paper-2:#faf8f2;
   --ink:#2a3bd6;
   --ink-70:rgba(42,59,214,.7); --ink-40:rgba(42,59,214,.4); --ink-15:rgba(42,59,214,.15);
   --pink:#f9cfe0; --pink-2:#fce3ee;
@@ -31,12 +31,9 @@ body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-heigh
 #sky{position:fixed;inset:0;z-index:-1;pointer-events:none}
 #cv{position:absolute;inset:0;width:100%;height:100%}
 
-/* cockpit-monitor atmosphere: scanlines + vignette + HUD corner frame, all above content but non-interactive */
-body::before{content:"";position:fixed;inset:0;z-index:5;pointer-events:none;
-  background:repeating-linear-gradient(to bottom,rgba(42,59,214,.05) 0px,rgba(42,59,214,.05) 1px,transparent 1px,transparent 3px);
-  mix-blend-mode:multiply}
+/* ambient vignette + HUD corner frame, above content but non-interactive */
 body::after{content:"";position:fixed;inset:0;z-index:5;pointer-events:none;
-  background:radial-gradient(ellipse at center,transparent 58%,rgba(42,59,214,.14) 100%)}
+  background:radial-gradient(ellipse at center,transparent 58%,rgba(42,59,214,.08) 100%)}
 .hudframe{position:fixed;inset:0;z-index:6;pointer-events:none}
 .hudframe .hc{position:absolute;width:26px;height:26px;border:2px solid var(--ink);opacity:.4}
 .hudframe .hc.tl{top:84px;left:14px;border-right:none;border-bottom:none}
@@ -45,7 +42,6 @@ body::after{content:"";position:fixed;inset:0;z-index:5;pointer-events:none;
 .hudframe .hc.br{bottom:14px;right:14px;border-left:none;border-top:none}
 .hudframe .hreadout{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;color:var(--ink);opacity:.4;white-space:nowrap}
 @media(max-width:860px){.hudframe{display:none}}
-@media(prefers-reduced-motion:reduce){body::before{display:none}}
 
 nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:.9rem clamp(1.2rem,4vw,2.6rem);background:linear-gradient(to bottom,var(--paper) 55%,transparent)}
 .stamp{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--ink)}
