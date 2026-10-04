@@ -51,12 +51,12 @@
     <div class="about-grid">
       <div class="about-copy rv">
         <p>
-          I'm <strong>Sourav</strong> — a software engineer who never got over
-          the fact that we live on a pale blue dot, and that
-          <strong>someone has to write the software that makes sense of it</strong>.
+          I'm <strong>Sourav</strong>, a software engineer who never got over
+          the fact that we live on a pale blue dot.
+          <strong>Someone has to write the software that makes sense of it</strong>.
         </p>
         <p>
-          By day I build systems and pipelines — the unglamorous plumbing that
+          By day I build systems and pipelines, the unglamorous plumbing that
           moves data where it needs to go, fast, without dropping it. By night
           I take things apart to see what they're made of: codebases, arguments,
           occasionally an actual gadget.
@@ -102,23 +102,7 @@
           </g>
           <text x="230" y="384" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10.5" fill="var(--ink)" opacity=".6">ORBITAL HISTORY · NOT TO SCALE · STILL ACCRETIONING</text>
         </svg>
-        <p class="cap">fig. 1 — orbital history of one engineer</p>
-      </div>
-    </div>
-
-    <div class="constellation-wrap rv" id="cwrap">
-      <p class="eyebrow">the constellation I navigate by — click a star</p>
-      <svg id="constellation" viewBox="0 0 1000 300" aria-hidden="true">
-        <g stroke="var(--ink)" stroke-width="2" stroke-dasharray="2 9" fill="none" stroke-linecap="round" opacity=".7">
-          <path d="M 90 70 L 300 45 L 520 105 L 740 55 L 900 140"/>
-          <path d="M 520 105 L 470 230"/>
-          <path d="M 300 45 L 470 230"/>
-        </g>
-      </svg>
-      <div class="qcard">
-        <span class="tag" id="qtag">star 01</span>
-        <blockquote id="qtext">Somewhere, something incredible is waiting to be known.</blockquote>
-        <cite id="qwho">— Carl Sagan</cite>
+        <p class="cap">fig. 1: orbital history of one engineer</p>
       </div>
     </div>
 
@@ -126,7 +110,7 @@
       <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span class="path">~/sourav/.plan</span></div>
 <pre><span class="c">// last updated: 2026-10-04 · mostly accurate, always aspirational</span>
 
-<span class="k">current orbit</span>  building — [ thing I'm building right now ]
+<span class="k">current orbit</span>  building: [ thing I'm building right now ]
 <span class="k">reading</span>        <span class="v">"The Character of Physical Law" — Feynman</span>
 <span class="k">listening</span>      <span class="v">launch webcasts, on loop, don't judge</span>
 <span class="k">learning</span>       <span class="v">Rust, slowly. The borrow checker is winning.</span>
@@ -161,33 +145,5 @@
 </div>
 
 <script src="main.js"></script>
-<script>
-/* constellation (about only) */
-(function(){
-  const stars=[
-    {x:9.0,y:23,name:'CARL SAGAN',tag:'the cosmic perspective',q:'Somewhere, something incredible is waiting to be known.'},
-    {x:30.0,y:15,name:'RICHARD FEYNMAN',tag:'the pleasure of finding things out',q:'What I cannot create, I do not understand.'},
-    {x:52.0,y:35,name:'ALBERT EINSTEIN',tag:'thought experiments',q:'Imagination is more important than knowledge.'},
-    {x:47.0,y:77,name:'SATYENDRA NATH BOSE',tag:'the quiet revolutionary',q:'A name carved into the physics of every photon gas — Bose–Einstein statistics.'},
-    {x:74.0,y:18,name:'EDSGER W. DIJKSTRA',tag:'elegance as a moral duty',q:'Computer science is no more about computers than astronomy is about telescopes.'},
-    {x:90.0,y:47,name:'JOHN CARMACK',tag:'the sorcerer of realtime',q:'Low-level programming is good for the programmer’s soul.'}
-  ];
-  const wrap=document.getElementById('cwrap');
-  const qt=document.getElementById('qtext'),qw=document.getElementById('qwho'),qg=document.getElementById('qtag');
-  stars.forEach((s,i)=>{
-    const b=document.createElement('button');
-    b.className='star-btn';b.style.left=s.x+'%';b.style.top=s.y+'%';
-    b.setAttribute('aria-label',s.name+' — '+s.tag);
-    b.innerHTML=`<span class="glow"></span><span class="label">${s.name}</span>`;
-    b.addEventListener('click',()=>{
-      document.querySelectorAll('.star-btn').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      qt.textContent='“'+s.q+'”';qw.textContent='— '+s.name;
-      qg.textContent='star 0'+(i+1)+' · '+s.tag;
-    });
-    wrap.appendChild(b);
-  });
-})();
-</script>
 </body>
 </html>

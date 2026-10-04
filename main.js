@@ -47,7 +47,7 @@
 (function(){
   const bub=document.getElementById('bubble'); if(!bub)return;
   const pages=[
-    "Hi, I'm PLUTO — the onboard computer. Welcome to Sourav's workbench.",
+    "Hi, I'm PLUTO, the onboard computer. Welcome to Sourav's workbench.",
     "He stepped away from the console, so the tools and I are holding the fort.",
     "Fair warning: everything on this bench drags. I won't tell if you rearrange.",
     "When you're done playing, scroll down. There's actual work down there. Apparently."
@@ -68,7 +68,7 @@
   const w=document.getElementById('plutow'); if(!w)return;
   const t=document.getElementById('plutowtxt');
   const tips=[
-    "psst — the objects on my workbench are draggable. just saying.",
+    "psst, the objects on my workbench are draggable. just saying.",
     "PLUTO fun fact: I am not a planet. I am a load-bearing personality.",
     "that pale blue dot in the corner? worth a click.",
     "the blog has a Feynman diagram. he'd have hated the accuracy. love the spirit."
