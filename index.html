@@ -343,7 +343,8 @@
     const or=obj.getBoundingClientRect();
     const tx=(e.clientX-br.left)/S-(or.left-br.left)/S; // grab offset in stage px
     const ty=(e.clientY-br.top)/S-(or.top-br.top)/S;
-    drag={el:obj,tx,ty,br:bench};
+    const baseX=parseFloat(obj.style.left)||0,baseY=parseFloat(obj.style.top)||0;
+    drag={el:obj,tx,ty,br,baseX,baseY};
     obj.style.zIndex=50;obj.style.transition='none';
     e.preventDefault();
   });
@@ -354,7 +355,7 @@
     let y=(e.clientY-drag.br.top)/S-drag.ty;
     x=Math.max(-w*.25,Math.min(STW-w*.75,x));
     y=Math.max(-h*.25,Math.min(STH-h*.75,y));
-    drag.el.style.transform='translate('+x+'px,'+y+'px)';
+    drag.el.style.transform='translate('+(x-drag.baseX)+'px,'+(y-drag.baseY)+'px)';
   },{passive:false});
   addEventListener('pointerup',()=>{
     if(!drag)return;
