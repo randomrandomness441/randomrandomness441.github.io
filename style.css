@@ -17,14 +17,9 @@
 html{scroll-behavior:smooth;font-size:112.5%}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.65;font-size:1.02rem;overflow-x:hidden;
   background-image:
-    radial-gradient(var(--ink-15) .8px, transparent .8px),
-    radial-gradient(42% 36% at 10% 12%, rgba(255,90,160,.5), transparent 70%),
-    radial-gradient(46% 40% at 90% 8%, rgba(90,110,255,.42), transparent 70%),
-    radial-gradient(50% 45% at 85% 92%, rgba(255,185,60,.45), transparent 70%),
-    radial-gradient(42% 38% at 8% 90%, rgba(70,220,175,.42), transparent 70%);
-  background-size:26px 26px, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
-  background-repeat:repeat, no-repeat, no-repeat, no-repeat, no-repeat;
-  background-attachment:scroll, fixed, fixed, fixed, fixed}
+    linear-gradient(var(--ink-15) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ink-15) 1px, transparent 1px);
+  background-size:28px 28px, 28px 28px}
 ::selection{background:var(--yellow);color:var(--ink)}
 .wob{border-radius:255px 15px 225px 15px/15px 225px 15px 255px}
 .wob2{border-radius:15px 225px 15px 255px/255px 15px 225px 15px}
@@ -50,6 +45,15 @@ body::after{content:"";position:fixed;inset:0;z-index:5;pointer-events:none;
 .hudframe .hc.br{bottom:14px;right:14px;border-left:none;border-top:none}
 .hudframe .hreadout{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;color:var(--ink);opacity:.4;white-space:nowrap}
 @media(max-width:860px){.hudframe{display:none}}
+
+/* margin doodles — things a physicist sketches while thinking, not decoration */
+.notebook{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.notebook .nd{position:absolute;fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.15}
+.notebook .nd circle{fill:var(--ink);stroke:none}
+.notebook .nd-feyn{top:128px;left:34px;width:132px}
+.notebook .nd-orbit{top:100px;right:38px;width:98px}
+.notebook .nd-pend{bottom:64px;left:28px;width:92px}
+@media(max-width:1480px){.notebook{display:none}}
 
 nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:.9rem clamp(1.2rem,4vw,2.6rem);background:linear-gradient(to bottom,var(--paper) 55%,transparent)}
 .stamp{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--ink)}

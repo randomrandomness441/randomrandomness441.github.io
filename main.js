@@ -25,6 +25,23 @@
   document.body.appendChild(hud);
 })();
 
+/* margin doodles — Feynman diagram, an orbit, a Kapitsa pendulum, sketched in ink */
+(function(){
+  const nb=document.createElement('div');
+  nb.className='notebook';
+  nb.setAttribute('aria-hidden','true');
+  nb.innerHTML=
+    '<svg class="nd nd-feyn" viewBox="0 0 160 110"><path d="M14 16 L54 55"/><path d="M14 94 L54 55"/>'
+    +'<path d="M54 55 Q61 45 68 55 T82 55 T96 55 T110 55"/><path d="M110 55 L146 16"/><path d="M110 55 L146 94"/>'
+    +'<circle cx="54" cy="55" r="2.4"/><circle cx="110" cy="55" r="2.4"/></svg>'
+    +'<svg class="nd nd-orbit" viewBox="0 0 120 120"><ellipse cx="60" cy="62" rx="50" ry="19" transform="rotate(-18 60 62)"/>'
+    +'<circle cx="60" cy="62" r="4"/><circle cx="14" cy="46" r="2.6"/></svg>'
+    +'<svg class="nd nd-pend" viewBox="0 0 110 130"><path d="M18 112 h74"/>'
+    +'<path d="M30 112 l8 -14 M46 112 l8 -14 M62 112 l8 -14 M78 112 l8 -14"/>'
+    +'<path d="M55 98 V30"/><circle cx="55" cy="20" r="9"/><path d="M40 24 q15 -14 30 0" stroke-dasharray="3 4"/></svg>';
+  document.body.appendChild(nb);
+})();
+
 /* drifting ink specks */
 (function(){
   const cv=document.getElementById('cv'); if(!cv)return;
