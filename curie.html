@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sourav Singh | Project One</title>
+<title>Sourav Singh | Curie</title>
+<meta name="description" content="A concurrency tutor that races your code 150 times under ThreadSanitizer, plus a job-search pipeline that won't put a claim on your resume your point bank can't back up.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffe6a3'/%3E%3Cpath d='M16 5l4 13h-8z' fill='%232a3bd6'/%3E%3Cpath d='M13 20h6l-3 6z' fill='%23ff9d7a'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,82 +43,100 @@
 <main>
   <section style="padding-top:7rem">
     <div class="cs rv">
-      <!-- sticky rail (her pattern) -->
       <aside class="rail" aria-label="section navigation">
         <a href="#p-background" data-rail="p-background">Background</a>
         <a href="#p-design" data-rail="p-design">Design</a>
         <a href="#p-logic" data-rail="p-logic">Logic</a>
         <a href="#p-improvements" data-rail="p-improvements">Improvements</a>
         <a href="#p-reflection" data-rail="p-reflection">Reflection</a>
-        <a href="#" class="ghost">Prototype ↗</a>
+        <a href="https://github.com/randomrandomness441/curie" class="ghost" target="_blank" rel="noopener">Repo ↗</a>
       </aside>
 
       <div class="body">
-        <h1 style="font-family:var(--serif);font-weight:900;font-size:clamp(2.6rem,6vw,4.4rem);line-height:1">Project One</h1>
+        <h1 style="font-family:var(--serif);font-weight:900;font-size:clamp(2.6rem,6vw,4.4rem);line-height:1">Curie</h1>
         <p style="margin:.8rem 0;max-width:44rem">
-          A ___ that does ___ by ___. The one-line pitch with the mechanism,
-          not the category: what it is, why it exists.
+          Two tools in one local app. One teaches concurrency by compiling your code
+          and actually trying to break it. The other reads job postings the way a
+          person would and writes a resume that can't claim more than you've actually
+          done. Named for Marie Curie: genuinely multidisciplinary, not a narrow
+          single-purpose tool.
         </p>
 
         <div style="display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0">
           <span class="pill ghost">role: solo build</span>
-          <span class="pill ghost">stack: [stack]</span>
-          <span class="pill ghost">context: self-initiated</span>
-          <span class="pill ghost">timeline: [dates] · [n] weeks</span>
+          <span class="pill ghost">stack: Python, C++, Java, vanilla JS</span>
+          <span class="pill ghost">context: self-initiated, built to actually prep with</span>
+          <span class="pill ghost">timeline: ongoing</span>
         </div>
 
         <h3 class="big" id="p-background">Background</h3>
         <span class="eyebrow">core question:</span>
         <div class="m-coreq" style="margin-top:.4rem">
-          <span class="q">What question was this built to answer?</span>
+          <span class="q">What does a tool that actually teaches concurrency, not just quizzes it, need to check?</span>
         </div>
         <p>
-          The problem behind the problem. What people say they want vs. what
-          they actually struggle with. Where the idea came from: a conversation,
-          an outage, a stubborn itch.
+          Most interview prep asks you to explain concurrency in words. Explaining it
+          and writing code that doesn't race under load are different skills, and the
+          gap between them is exactly where real bugs live. The other half came from
+          the same frustration pointed at job hunting: generic resumes get generic
+          rejections, and writing a new one by hand for every posting doesn't scale,
+          but letting an LLM invent accomplishments you never had is worse than not
+          applying.
         </p>
         <div class="qcard">
           <span class="tag">goal</span>
-          <blockquote>“A quote from a user, teammate, or future self that grounds the whole thing.”</blockquote>
-          <cite>— someone who mattered to this project</cite>
+          <blockquote>"It actually reads the posting against your real work history, the way a person would, and tells you why."</blockquote>
+          <cite>— from the project README</cite>
         </div>
 
         <h3 class="big" id="p-design">Design</h3>
         <span class="eyebrow">decisions and their defense</span>
         <p>
-          The central metaphor or architecture choice, defended explicitly:
-          why THIS and not the three saner alternatives. What was cut on purpose.
+          One process serves both halves from a single stdlib HTTP server, no
+          framework. The two apps don't share a database or a UI, only a port and a
+          house style.
         </p>
         <div class="mockcards">
-          <div class="mc"><b>Feature one</b><small>what it does and why it earns its place</small></div>
-          <div class="mc"><b>Feature two</b><small>the surprising part that people remember</small></div>
-          <div class="mc"><b>Feature three</b><small>the unglamorous part that makes it work</small></div>
+          <div class="mc"><b>A verdict, not a pass/fail</b><small>compile, then ThreadSanitizer, then 150 stress runs under randomized scheduling delay — each stage only runs if the one before it came back clean, and "passes but races" is its own verdict, not a pass</small></div>
+          <div class="mc"><b>A fallback chain with memory</b><small>z.ai first, then a real Anthropic key if set, then the Claude CLI itself on a subscription's own usage window; if z.ai fails, it's skipped for 300 seconds instead of re-paying retry cost on every call</small></div>
+          <div class="mc"><b>Data and code physically separated</b><small>after a personal seed script with a real name and phone number leaked into the first snapshot commit, every database and generated file now lives under one data/ folder, and a single sync script is the only thing that publishes</small></div>
         </div>
 
         <h3 class="big" id="p-logic">Logic</h3>
         <span class="eyebrow">the rules of the system</span>
         <p>
-          Explicit edge cases and how they resolve. "What happens if X fails?
-          If Y arrives late? If Z doubles overnight?" Where the invariants live.
+          Before a resume renders, a hard style gate checks the drafted summary and
+          cover letter: no em dashes, no AI-slop phrases, none of the hedge-then-reveal
+          sentence shape it bans by name. It's a stop, not a warning. Near-duplicate
+          point-bank bullets get clustered before selection (character-sequence
+          similarity, threshold 0.82) so a bullet edited into a slightly different
+          phrasing, with the old version accidentally left active, can't land on the
+          same resume twice and double-count toward keyword coverage. The one-page
+          trim loop renders, checks the real PDF page count, drops the single
+          lowest-value bullet if it overflowed, and repeats until it fits or runs out
+          of bullets to drop, so it always terminates. The LLM's fit judgment and the
+          literal ATS keyword estimate are reported as two separate numbers on
+          purpose: one reasons semantically, the other counts text matches, and a
+          posting can score high on one and low on the other without either number
+          being wrong.
         </p>
 
         <h3 class="big" id="p-improvements">Improvements</h3>
         <span class="eyebrow">to resolve: honesty reads as competence</span>
         <ul class="resolve">
-          <li><b>PERF</b>: the thing that's fast enough, until it isn't</li>
-          <li><b>LOGIC</b>: the edge case still open</li>
-          <li><b>UX</b>: where users hesitate</li>
-          <li><b>SCALE</b>: the assumption that breaks at 10×</li>
+          <li><b>STYLE</b>: the AI-slop rule set is hand-maintained; a determined model can probably still find a phrasing it allows that still reads synthetic</li>
+          <li><b>SETUP</b>: needs Python, LibreOffice, and an API key before it does anything useful, not a one-click install</li>
+          <li><b>COVERAGE</b>: the concurrency packs span eight topics so far; most real interview topics aren't packs yet</li>
+          <li><b>UX</b>: the judge score and the ATS estimate can diverge on the same posting, and the UI doesn't explain in-line why that's expected</li>
         </ul>
 
         <h3 class="big" id="p-reflection">Reflection</h3>
         <p class="m-takeaway" style="margin:0 0 .8rem">
-          “What it felt like to build this: one honest paragraph, no lessons-learned voice.”
+          "Building the thing that checks a resume for honesty made it a lot harder to lie to myself in mine."
         </p>
         <div class="m-also" style="border-top:2px dashed var(--ink-40);padding-top:1rem">
           VIEW ALSO ·
-          <a class="pill ghost" href="index.html#projects">Project Two</a>
-          <a class="pill ghost" href="index.html#projects">Project Three</a>
+          <a class="pill ghost" href="kapitsa.html">Kapitsa</a>
           <a class="pill ghost" href="index.html#projects">all projects</a>
         </div>
       </div>
@@ -133,7 +152,7 @@
     <button id="copymail">COPY ⧉</button>
   </div>
   <div class="elsewhere rv">
-    <a class="pill p-pink" href="#" rel="noopener">GitHub ↗</a>
+    <a class="pill p-pink" href="https://github.com/randomrandomness441" target="_blank" rel="noopener">GitHub ↗</a>
     <a class="pill" href="#" rel="noopener">LinkedIn ↗</a>
     <a class="pill p-aqua" href="#" rel="noopener">Resume ↗</a>
   </div>
@@ -145,7 +164,7 @@
 <div id="modal" role="dialog" aria-modal="true" aria-label="A message">
   <div class="box">
     <button id="mclose" aria-label="close">✕</button>
-    <p>“Look again at that dot. That's here. That's home. That's us.”</p>
+    <p>"Look again at that dot. That's here. That's home. That's us."</p>
     <cite>— CARL SAGAN · PALE BLUE DOT · 1994</cite>
   </div>
 </div>
