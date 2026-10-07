@@ -25,21 +25,26 @@
   document.body.appendChild(hud);
 })();
 
-/* margin doodles — Feynman diagram, an orbit, a Kapitsa pendulum, sketched in ink */
+/* console telemetry — a few readouts from the thing PLUTO lives in */
 (function(){
-  const nb=document.createElement('div');
-  nb.className='notebook';
-  nb.setAttribute('aria-hidden','true');
-  nb.innerHTML=
-    '<svg class="nd nd-feyn" viewBox="0 0 160 110"><path d="M14 16 L54 55"/><path d="M14 94 L54 55"/>'
-    +'<path d="M54 55 Q61 45 68 55 T82 55 T96 55 T110 55"/><path d="M110 55 L146 16"/><path d="M110 55 L146 94"/>'
-    +'<circle cx="54" cy="55" r="2.4"/><circle cx="110" cy="55" r="2.4"/></svg>'
-    +'<svg class="nd nd-orbit" viewBox="0 0 120 120"><ellipse cx="60" cy="62" rx="50" ry="19" transform="rotate(-18 60 62)"/>'
-    +'<circle cx="60" cy="62" r="4"/><circle cx="14" cy="46" r="2.6"/></svg>'
-    +'<svg class="nd nd-pend" viewBox="0 0 110 130"><path d="M18 112 h74"/>'
-    +'<path d="M30 112 l8 -14 M46 112 l8 -14 M62 112 l8 -14 M78 112 l8 -14"/>'
-    +'<path d="M55 98 V30"/><circle cx="55" cy="20" r="9"/><path d="M40 24 q15 -14 30 0" stroke-dasharray="3 4"/></svg>';
-  document.body.appendChild(nb);
+  const tm=document.createElement('div');
+  tm.className='telemetry';
+  tm.setAttribute('aria-hidden','true');
+  tm.innerHTML=
+    '<div class="tm tm-track"><span class="lbl">TRACK 014</span>Δ 0.0043°/s<br>LOCK ·····●···</div>'
+    +'<div class="tm tm-sig"><span class="lbl">SIGNAL</span>▓▓▓▓▓▓▓░░░ 74%</div>'
+    +'<div class="tm tm-range"><span class="lbl">RANGE</span><span id="tmrange">3,900,214,558 KM</span></div>';
+  document.body.appendChild(tm);
+
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduce){
+    const rangeEl=tm.querySelector('#tmrange');
+    let range=3900214558;
+    setInterval(()=>{
+      range+=Math.floor(Math.random()*40+8);
+      rangeEl.textContent=range.toLocaleString('en-US')+' KM';
+    },2200);
+  }
 })();
 
 /* drifting ink specks */
@@ -50,8 +55,16 @@
   let W,H,dots=[],mx=0,my=0;
   function resize(){W=cv.width=innerWidth*devicePixelRatio;H=cv.height=innerHeight*devicePixelRatio;
     cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';
-    const n=Math.min(90,Math.floor(innerWidth*innerHeight/18000));
-    dots=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,r:(Math.random()*1.6+.8)*devicePixelRatio,z:Math.random()*.9+.1,tw:Math.random()*Math.PI*2,ts:.3+Math.random()*.8}));
+    const n=Math.min(150,Math.floor(innerWidth*innerHeight/13000));
+    dots=Array.from({length:n},(_,i)=>({
+      x:Math.random()*W,y:Math.random()*H,
+      z:Math.random()*.9+.1,tw:Math.random()*Math.PI*2,ts:.3+Math.random()*.8,
+      signal:i%17===0
+    }));
+    for(const d of dots){
+      d.r=(d.signal? Math.random()*1.1+2.2 : Math.random()*1.3+.7)*devicePixelRatio;
+      d.vy=d.z*(d.signal?6:10)*devicePixelRatio/1000;
+    }
   }
   addEventListener('resize',resize);resize();
   addEventListener('mousemove',e=>{mx=(e.clientX/innerWidth-.5);my=(e.clientY/innerHeight-.5);},{passive:true});
@@ -61,7 +74,10 @@
     ctx.clearRect(0,0,W,H);
     for(const d of dots){
       d.tw+=d.ts*dt/1000;
-      const a=reduce? .12 : .07+.1*Math.abs(Math.sin(d.tw));
+      if(!reduce){d.y+=d.vy*dt; if(d.y>H+d.r){d.y=-d.r;d.x=Math.random()*W;}}
+      const peak=d.signal?.4:.17;
+      const base=d.signal?.12:.06;
+      const a=reduce? base+peak*.4 : base+peak*Math.abs(Math.sin(d.tw));
       const px=d.x-mx*20*d.z*devicePixelRatio, py=d.y-my*20*d.z*devicePixelRatio;
       ctx.beginPath();ctx.arc(px,py,d.r,0,7);ctx.fillStyle=`rgba(42,59,214,${a})`;ctx.fill();
     }
