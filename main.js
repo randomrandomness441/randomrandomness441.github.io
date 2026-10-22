@@ -75,11 +75,11 @@
     for(const d of dots){
       d.tw+=d.ts*dt/1000;
       if(!reduce){d.y+=d.vy*dt; if(d.y>H+d.r){d.y=-d.r;d.x=Math.random()*W;}}
-      const peak=d.signal?.4:.17;
-      const base=d.signal?.12:.06;
+      const peak=d.signal?.55:.2;
+      const base=d.signal?.16:.1;
       const a=reduce? base+peak*.4 : base+peak*Math.abs(Math.sin(d.tw));
       const px=d.x-mx*20*d.z*devicePixelRatio, py=d.y-my*20*d.z*devicePixelRatio;
-      ctx.beginPath();ctx.arc(px,py,d.r,0,7);ctx.fillStyle=`rgba(42,59,214,${a})`;ctx.fill();
+      ctx.beginPath();ctx.arc(px,py,d.r,0,7);ctx.fillStyle=`rgba(226,234,255,${a})`;ctx.fill();
     }
     requestAnimationFrame(frame);
   }
