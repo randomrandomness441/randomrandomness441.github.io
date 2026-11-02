@@ -3,394 +3,279 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#070b18">
-<title>Sourav Singh — Engineer, builder of things</title>
-<meta name="description" content="Sourav Singh's workbench. Software engineer, space enthusiast, builder of things.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffe6a3'/%3E%3Cpath d='M16 5l4 13h-8z' fill='%232a3bd6'/%3E%3Cpath d='M13 20h6l-3 6z' fill='%23ff9d7a'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#f7f5ee">
+<title>Sourav Singh</title>
+<meta name="description" content="Sourav Singh is a Java backend engineer with 4+ years building event-driven microservices and data systems at LinkedIn and Cashfree.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1' y='1' width='30' height='30' rx='7' fill='%23facc00' stroke='%23161616' stroke-width='2'/%3E%3Ctext x='16' y='23' font-size='19' font-weight='700' font-family='Arial' text-anchor='middle' fill='%23161616'%3ES%3C/text%3E%3C/svg%3E">
+<script>
+  /* before first paint: enable reveal styles and apply the saved theme, so nothing flashes */
+  (function(){
+    var d=document.documentElement;d.className+=' js';
+    var t=null;try{t=localStorage.getItem('theme');}catch(e){}
+    if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+    d.dataset.theme=t;
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,500&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="home.css">
 </head>
 <body>
+<div id="cursor" aria-hidden="true"></div>
 
-<div id="boot" aria-hidden="true">
-  <div>ESTABLISHING UPLINK<span class="blink">_</span></div>
-  <div class="bar"><i id="bootbar"></i></div>
-  <div id="bootmsg">warming up the workbench…</div>
-</div>
+<header class="bar">
+  <a class="mark" href="#top" aria-label="Back to top">S</a>
+  <nav aria-label="Sections">
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#experience">Experience</a>
+    <a href="#work">Work</a>
+    <a href="blog.html">Blog</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <button class="themepick" id="themepick" type="button" aria-label="Toggle dark theme" aria-pressed="false">☾</button>
+  <a class="bar__cta" href="Sourav_Singh_Resume.pdf" download><span>Résumé</span><span class="long">PDF ↓</span></a>
+  <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+</header>
+<button class="scrim" id="scrim" type="button" tabindex="-1" aria-label="Close menu"></button>
+<aside class="drawer" aria-label="Menu">
+  <nav>
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#experience">Experience</a>
+    <a href="#work">Work</a>
+    <a href="blog.html">Blog</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</aside>
 
-<div class="grain" aria-hidden="true"></div>
+<main id="top">
 
-<div id="sky"><canvas id="cv"></canvas></div>
-
-<nav>
-  <a class="stamp" href="./" aria-label="home">
-    <svg width="40" height="40" viewBox="0 0 44 44" aria-hidden="true">
-      <circle cx="22" cy="22" r="19" fill="var(--yellow)" stroke="var(--ink)" stroke-width="2.2" stroke-dasharray="4 3"/>
-      <path d="M22 9l4.5 15h-9z" fill="var(--ink)"/>
-      <path d="M19 25h6l-3 7z" fill="var(--coral)" stroke="var(--ink)" stroke-width="1.4"/>
-    </svg>
-    <span>SOURAV.SINGH</span>
-  </a>
-  <div class="links">
-    <a class="pill p-pink" href="about.html">About</a>
-    <a class="pill" href="blog.html">Blog</a>
-    <a class="pill p-aqua" href="#projects" aria-current="page">Projects</a>
-    <a class="pill p-lav" href="#contact">Contact</a>
-  </div>
-</nav>
-
-<main>
-
-  <!-- ==================== HERO ==================== -->
-  <header class="hero">
-    <p class="kicker">ENGINEER · BUILDER OF THINGS · BENGALURU, IN</p>
-    <h1>Sourav's<br><span class="yay">workbench.</span></h1>
-    <p class="sub">
-      I like systems that move data across impossible distances: pipelines,
-      telescopes, and the occasional side project that <b>escapes the garage</b>.
-    </p>
-
-    <div class="bubble" id="bubble" role="button" tabindex="0" aria-label="PLUTO is speaking, click for next page">
-      <span class="who">PLUTO · onboard computer</span>
-      <p class="txt" id="btxt"></p>
-      <div class="pg">
-        <span class="dots" id="bdots"></span>
-        <span class="cnt" id="bcnt">1 / 4</span>
+  <!-- HERO -->
+  <section class="hero" style="padding-block:0">
+    <div class="hero__grid" aria-hidden="true"><div class="hero__lines"></div></div>
+    <div class="hero__light" aria-hidden="true"></div>
+    <div class="wrap hero__inner">
+      <p class="eyebrow hero__eyebrow">Bengaluru, India · Open to new roles</p>
+      <h1 class="name"><span><i>Sourav</i></span><span><i>Singh</i></span></h1>
+      <p class="headline">Backend engineer building <b>event-driven systems</b> and data platforms that hold up at scale.</p>
+      <div class="hero__actions">
+        <a class="cta" href="#work">
+          <span class="cta__fill" aria-hidden="true"></span>
+          <span class="cta__text">See the work</span>
+          <span class="cta__icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+        </a>
+        <a class="ghost" href="blog.html"><i aria-hidden="true"></i>Read the build log</a>
       </div>
+      <ul class="s-stats">
+        <li><b><span data-count="4">4</span>+</b><span>Years in backend</span></li>
+        <li><b>~<span data-count="70">70</span> PB</b><span>LinkedIn data platform</span></li>
+        <li><b>~<span data-count="40">40</span>K/s</b><span>Kafka writes at Cashfree</span></li>
+      </ul>
     </div>
+  </section>
 
-    <div class="bench-wrap">
-      <div class="bench" id="bench">
-        <div class="gtop">
-          <div class="gtabs" role="tablist" aria-label="choose a game">
-            <button class="gtab on" data-game="whack" role="tab" aria-selected="true">whack-a-mole</button>
-            <button class="gtab" data-game="catch" role="tab" aria-selected="false">catch</button>
-            <button class="gtab" data-game="memory" role="tab" aria-selected="false">memory</button>
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="wrap">
+      <div class="section__head reveal"><p class="eyebrow">About</p><h2>The plumbing, done properly.</h2></div>
+      <div class="about__grid">
+        <aside class="facts reveal">
+          <h3>At a glance</h3>
+          <ul>
+            <li><span>Role</span><b>Software Engineer</b></li>
+            <li><span>Focus</span><b>Backend · Distributed systems</b></li>
+            <li><span>Previously</span><b>LinkedIn, Cashfree</b></li>
+            <li><span>Studied</span><b>NIT Jamshedpur</b></li>
+            <li><span>Based in</span><b>Bengaluru, India</b></li>
+          </ul>
+        </aside>
+        <div>
+          <p class="about__lede reveal">Java backend engineer with 4+ years building event-driven microservices and data systems, at home with both high-volume batch data and fast-moving streams.</p>
+          <div class="about__notes reveal">
+            <p>At LinkedIn I worked on the Unified Metrics Platform in Data Infrastructure. Before that I spent two years at Cashfree Payments building the pipelines behind merchant dashboards and reports.</p>
+            <p>Lately I'm leaning into LLM tooling: validation tools, embeddings and vector search, agentic workflows. My side projects try to measure whether an AI answer can be trusted before believing it, and I write up what goes wrong in the <a href="blog.html">build log</a>.</p>
           </div>
-          <button id="pbd" title="a pale, blue dot" aria-label="A pale blue dot, press for a message"><span class="sr">pale blue dot</span></button>
         </div>
-        <div class="ghud">
-          <span class="gstat"><b id="gscore">SCORE 0</b></span>
-          <span class="gstat" id="gtimewrap"><b id="gtime">0:20</b></span>
-          <button id="gstart">▶ play</button>
-        </div>
-        <div id="gstage" class="gstage"></div>
-      </div>
-      <div class="bench-controls">
-        <span class="benchnote" id="gmsg">pick a game and hit play.</span>
-        <span class="benchnote viewwork">VIEW WORK ↓</span>
       </div>
     </div>
+  </section>
 
-  </header>
+  <!-- SKILLS -->
+  <section class="skills" id="skills">
+    <div class="wrap">
+      <div class="section__head reveal"><p class="eyebrow">Toolbox</p><h2>What I reach for.</h2></div>
+      <div class="skills__grid reveal">
+        <div class="skillgroup"><h3>Languages &amp; backend</h3><div class="s-tools"><span class="s-tool">Java</span><span class="s-tool">Python</span><span class="s-tool">SQL</span><span class="s-tool">Bash</span><span class="s-tool">Scala</span><span class="s-tool">Spring Boot</span><span class="s-tool">Microservices</span><span class="s-tool">REST APIs</span><span class="s-tool">Concurrency</span><span class="s-tool">JVM &amp; JIT behaviour</span></div></div>
+        <div class="skillgroup"><h3>Streaming &amp; batch</h3><div class="s-tools"><span class="s-tool">Kafka</span><span class="s-tool">ActiveMQ</span><span class="s-tool">Spark</span><span class="s-tool">Airflow</span><span class="s-tool">dbt</span><span class="s-tool">Iceberg</span><span class="s-tool">Trino</span></div></div>
+        <div class="skillgroup"><h3>Datastores</h3><div class="s-tools"><span class="s-tool">MySQL</span><span class="s-tool">MongoDB</span><span class="s-tool">Elasticsearch</span><span class="s-tool">Redis</span><span class="s-tool">Qdrant</span></div></div>
+        <div class="skillgroup"><h3>Cloud &amp; infra</h3><div class="s-tools"><span class="s-tool">AWS (S3, SES)</span><span class="s-tool">Kubernetes</span><span class="s-tool">Docker</span><span class="s-tool">CI/CD</span></div></div>
+        <div class="skillgroup"><h3>AI tooling</h3><div class="s-tools"><span class="s-tool">Claude Code</span><span class="s-tool">Cursor</span><span class="s-tool">Agentic workflows</span><span class="s-tool">RAG &amp; embeddings</span><span class="s-tool">LLM validation tooling</span></div></div>
+      </div>
+    </div>
+  </section>
 
-  <!-- ==================== PROJECTS ==================== -->
-  <section id="projects">
-    <p class="eyebrow rv">work; the shipyard</p>
-    <h2 class="rv">Things I built.<br>Things that built me.</h2>
-    <svg class="squig rv" width="220" height="14" viewBox="0 0 220 14" aria-hidden="true">
-      <path d="M3 8 q14 -8 28 0 t28 0 t28 0 t28 0 t28 0 t28 0 t28 0" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
-      <circle cx="214" cy="8" r="4" fill="var(--pink)" stroke="var(--ink)" stroke-width="2"/>
-    </svg>
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="wrap xp__grid">
+      <aside class="xp__index">
+        <div class="section__head reveal" style="margin-bottom:0"><p class="eyebrow">Experience</p><h2>Where I've worked.</h2></div>
+        <ol class="xp__list" aria-label="Roles">
+          <li><a class="xp__item on" href="#job-linkedin" data-xp-item><span class="xp__bullet" aria-hidden="true"></span><span><b>LinkedIn</b><span>Software Engineer · 2024–26</span></span></a></li>
+          <li><a class="xp__item" href="#job-cashfree" data-xp-item><span class="xp__bullet" aria-hidden="true"></span><span><b>Cashfree Payments</b><span>SDE-1 · 2022–24</span></span></a></li>
+        </ol>
+      </aside>
+      <div class="xp__detail">
+        <article class="job reveal" id="job-linkedin" data-open="0">
+          <p class="job__when"><b>Apr 2024 – Apr 2026</b>Bengaluru</p>
+          <h3><button class="job__toggle" type="button" aria-expanded="false"><span>Software Engineer <span class="at">— LinkedIn</span></span><span class="job__chev" aria-hidden="true"></span></button></h3>
+          <div class="job__body">
+            <p class="job__lede">Unified Metrics Platform (Data Infrastructure). Helped build the company-wide data platform on dbt and Iceberg, and the tooling that keeps pipelines safe to ship.</p>
+            <ul class="job__points">
+              <li>Moved <strong>4,000+ live pipelines</strong> onto the platform (~70 PB, 7,000+ daily flows) while cutting Spark usage 15%.</li>
+              <li>Built APIs so pipelines read Hive and Iceberg interchangeably, carrying <strong>15,000+ table migrations</strong> with no SLA breach.</li>
+              <li>Led the response to an org-wide Code Yellow with automated regression, a 24-hour soak and gated promotion: <strong>zero hard-SLA misses</strong> over 3 months.</li>
+              <li>Built an LLM output-regression checker (onboarding 3 days to 1) and a <strong>~98%-accurate</strong> duplicate-pipeline detector on embeddings and vector search.</li>
+              <li>Set up the infra org's first central testing platform, adopted by 6+ teams.</li>
+            </ul>
+            <div class="s-chips"><span class="s-chip">Java</span><span class="s-chip">Spark</span><span class="s-chip">dbt</span><span class="s-chip">Iceberg</span><span class="s-chip">Trino</span></div>
+          </div>
+        </article>
+        <article class="job reveal" id="job-cashfree" data-open="0">
+          <p class="job__when"><b>Jan 2022 – Apr 2024</b>Bengaluru</p>
+          <h3><button class="job__toggle" type="button" aria-expanded="false"><span>SDE-1 <span class="at">— Cashfree Payments</span></span><span class="job__chev" aria-hidden="true"></span></button></h3>
+          <div class="job__body">
+            <p class="job__lede">Built the pipelines, APIs and dashboards that merchants like IRCTC and Swiggy relied on.</p>
+            <ul class="job__points">
+              <li>Architected a MySQL → Kafka → Elasticsearch pipeline with ActiveMQ retries and a dead-letter queue, sustaining <strong>~40K writes/sec</strong>.</li>
+              <li>Cut report generation from <strong>5–6 hours to seconds</strong> with queue-backed async jobs.</li>
+              <li>Served <strong>300 QPS at p99 200ms</strong> on the merchant dashboard APIs, and kept payments fast through IPL peaks by warming the JVM before pods took traffic.</li>
+              <li>Added a backup reporting path for Elasticsearch outages and right-sized Kubernetes resources to cut cost.</li>
+            </ul>
+            <div class="s-chips"><span class="s-chip">Java</span><span class="s-chip">Kafka</span><span class="s-chip">Elasticsearch</span><span class="s-chip">MongoDB</span><span class="s-chip">Kubernetes</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
 
-    <div class="board rv">
-      <article class="pcard">
-        <span class="pin"></span>
-        <a class="mock" href="kapitsa.html" aria-label="Open Kapitsa">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5L5 19"/></svg>
-          drop a screenshot here
-        </a>
-        <div class="pinfo">
-          <span class="pno">file 01 · now</span>
-          <h3><a href="kapitsa.html">Kapitsa</a></h3>
-          <p class="pitch">Tells quiz puzzles from memory tests, judges its own judge against a one-line character counter, and says plainly which part doesn't work yet.</p>
-          <div class="ptags"><span>PYTHON</span><span>LLM EVAL</span><span>IN ORBIT</span></div>
+  <!-- WORK -->
+  <section class="work" id="work">
+    <div class="wrap">
+      <div class="section__head reveal"><p class="eyebrow">Selected work</p><h2>Four things worth opening.</h2><p>Two side projects with public write-ups, and two systems from my day jobs.</p></div>
+      <div class="cases">
+
+        <article class="case reveal">
+          <a class="case__shot c1" href="kapitsa.html" tabindex="-1" aria-hidden="true">
+            <div class="bars"><div><span>length rule</span><i style="width:91.5%"></i><b>91.5</b></div><div class="b2"><span>LLM judge</span><i style="width:92.3%"></i><b>92.3</b></div></div>
+            <span class="cap">accuracy % · the 0.8-point gap</span>
+          </a>
+          <div class="case__body">
+            <p class="case__no">01 / 2026 · Personal project</p>
+            <h3>Kapitsa</h3>
+            <p class="case__tag">Telling reasoning questions from recall trivia.</p>
+            <p class="case__lede">A pipeline that reads quiz decks and videos, judges each question, and finds its source article. Every verdict has to be checkable, and every score has to beat a dumb baseline first. A fine-tuned Qwen3-8B generator is the goal.</p>
+            <div class="s-chips"><span class="s-chip">Python</span><span class="s-chip">Qdrant</span><span class="s-chip">Qwen3-8B</span><span class="s-chip">LLM eval</span></div>
+            <a class="case__go" href="kapitsa.html">Read the write-up <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+
+        <article class="case reveal">
+          <a class="case__shot c2" href="curie.html" tabindex="-1" aria-hidden="true">
+            <div class="row"><span class="node">compile</span><span class="arr">→</span><span class="node">TSan</span><span class="arr">→</span><span class="node">150 stress runs</span></div>
+            <span class="cap">each stage gates the next</span>
+          </a>
+          <div class="case__body">
+            <p class="case__no">02 / 2026 · Personal project</p>
+            <h3>Curie</h3>
+            <p class="case__tag">A concurrency tutor that tries to break your code.</p>
+            <p class="case__lede">Compiles your code, runs ThreadSanitizer, then stress-tests it under randomized scheduling. The second half reads job postings and writes resumes that can't claim more than you've actually done.</p>
+            <div class="s-chips"><span class="s-chip">Python</span><span class="s-chip">C++</span><span class="s-chip">Java</span><span class="s-chip">Local-first</span></div>
+            <a class="case__go" href="curie.html">Read the write-up <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+
+        <article class="case reveal">
+          <div class="case__shot c3" aria-hidden="true">
+            <div class="row"><span class="node">MySQL</span><span class="arr">→</span><span class="node">Kafka</span><span class="arr">→</span><span class="node">Elasticsearch</span></div>
+            <span class="cap">+ ActiveMQ retries · dead-letter queue</span>
+          </div>
+          <div class="case__body">
+            <p class="case__no">03 / 2022–24 · Cashfree</p>
+            <h3>Event pipeline</h3>
+            <p class="case__tag">~40K writes/sec for IRCTC and Swiggy.</p>
+            <p class="case__lede">An event-driven pipeline with retries, a dead-letter queue, and a backup reporting path so merchants kept access to their data during Elasticsearch outages.</p>
+            <div class="s-chips"><span class="s-chip">Java</span><span class="s-chip">Kafka</span><span class="s-chip">Elasticsearch</span><span class="s-chip">ActiveMQ</span></div>
+            <span class="case__note">Work project · no public write-up</span>
+          </div>
+        </article>
+
+        <article class="case reveal">
+          <div class="case__shot c4" aria-hidden="true">
+            <div class="row"><span class="node">Hive</span><span class="arr">⇄</span><span class="node">API</span><span class="arr">⇄</span><span class="node">Iceberg</span></div>
+            <span class="cap">15,000+ tables migrated, no SLA breach</span>
+          </div>
+          <div class="case__body">
+            <p class="case__no">04 / 2024–26 · LinkedIn</p>
+            <h3>Data platform tooling</h3>
+            <p class="case__tag">Safe migration and testing at 70 PB.</p>
+            <p class="case__lede">APIs that let pipelines read Hive and Iceberg interchangeably, a central testing platform adopted by 6+ teams, and an embeddings-based detector that finds duplicate pipelines at ~98% accuracy.</p>
+            <div class="s-chips"><span class="s-chip">Spark</span><span class="s-chip">dbt</span><span class="s-chip">Iceberg</span><span class="s-chip">Vector search</span></div>
+            <span class="case__note">Work project · no public write-up</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION + WRITING -->
+  <section>
+    <div class="wrap">
+      <div class="section__head reveal"><p class="eyebrow">Education &amp; writing</p><h2>School, and the build log.</h2></div>
+      <div class="creds">
+        <div class="cred reveal">
+          <h3>Education</h3>
+          <ul><li><b>B.Tech, Electronics and Communications Engineering</b><span>National Institute of Technology, Jamshedpur</span><span>2018 – 2022</span></li></ul>
         </div>
-      </article>
-
-      <article class="pcard">
-        <span class="pin"></span>
-        <a class="mock" href="curie.html" aria-label="Open Curie">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5L5 19"/></svg>
-          drop a screenshot here
-        </a>
-        <div class="pinfo">
-          <span class="pno">file 02</span>
-          <h3><a href="curie.html">Curie</a></h3>
-          <p class="pitch">A concurrency tutor that races your code 150 times under ThreadSanitizer, plus a job-search pipeline that won't put a claim on your resume your point bank can't back up.</p>
-          <div class="ptags"><span>PYTHON</span><span>C++</span><span>LOCAL-FIRST</span></div>
+        <div class="cred reveal">
+          <h3>Writing</h3>
+          <ul>
+            <li><a href="blog/01-judge-92-vs-91.html"><b>My LLM judge scored 92.3%. Counting characters scored 91.5%.</b><span>Build log · Kapitsa</span></a></li>
+            <li><a href="blog/04-the-crop.html"><b>The crop was 1,020 pixels wide. The videos were 1,280.</b><span>Build log · Kapitsa</span></a></li>
+            <li><a href="blog.html"><b>All posts →</b><span>Seven so far</span></a></li>
+          </ul>
         </div>
-      </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="closer" id="contact">
+    <div class="wrap closer__inner">
+      <h2 class="reveal"><span>Let's build</span><span>something.</span></h2>
+      <p class="reveal">Open to backend and data-infrastructure roles. The fastest way to reach me is email.</p>
+      <a class="closer__mail reveal" href="mailto:sourav1319singh@gmail.com">sourav1319singh@gmail.com</a>
+      <div class="closer__links reveal">
+        <a href="https://github.com/randomrandomness441" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+        <a href="https://www.linkedin.com/in/souravsingh1319" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+        <a href="Sourav_Singh_Resume.pdf" download>Résumé PDF <span aria-hidden="true">↓</span></a>
+      </div>
     </div>
   </section>
 
 </main>
 
-<footer id="contact">
-  <p class="big rv">Say hello from your corner<br>of the pale blue dot.</p>
-  <p class="sub rv">The workbench is always listening.</p>
-  <div class="mailrow rv">
-    <a href="mailto:sourav1319singh@gmail.com">sourav1319singh@gmail.com</a>
-    <button id="copymail">COPY ⧉</button>
+<a class="totop" href="#top" aria-label="Back to top"><span aria-hidden="true">↑</span></a>
+<footer class="foot">
+  <div class="wrap">
+    <span>Sourav Singh · Bengaluru, India</span>
+    <span>© 2026</span>
+    <span class="foot__credit">Design adapted from <a href="https://github.com/aahil-khan/portfolio-canvas" target="_blank" rel="noopener noreferrer">aahil-khan/portfolio-canvas</a> (MIT), which credits yevtam.com for the shell and ajvadlaseen.com for the surface.</span>
   </div>
-  <div class="elsewhere rv">
-    <a class="pill p-pink" href="https://github.com/randomrandomness441" target="_blank" rel="noopener">GitHub ↗</a>
-    <a class="pill" href="#" rel="noopener">LinkedIn ↗</a>
-    <a class="pill p-aqua" href="#" rel="noopener">Resume ↗</a>
-  </div>
-  <p class="signoff rv">Thank you for being here. <b>Keep looking up.</b></p>
-  <p class="credit">illustrations: hand-drawn SVG · emoji stickers: OpenMoji (CC BY-SA 4.0)</p>
-  <a class="top" href="#">BACK TO ORBIT ↑</a>
 </footer>
 
-<div id="plutow">
-  <button class="x" aria-label="close">✕</button>
-  <span class="who">PLUTO</span>
-  <p id="plutowtxt">psst, try the whack-a-mole. it's harder than it looks.</p>
-</div>
-
-<div id="modal" role="dialog" aria-modal="true" aria-label="A message">
-  <div class="box">
-    <button id="mclose" aria-label="close">✕</button>
-    <p>“Look again at that dot. That's here. That's home. That's us.”</p>
-    <cite>— CARL SAGAN · PALE BLUE DOT · 1994</cite>
-  </div>
-</div>
-
-<script src="main.js"></script>
-<script>
-/* ---------- mini games (index only) ---------- */
-(function(){
-const ICONS={
-  rocket: "<g id=\"color\">\n    <circle cx=\"48.4645\" cy=\"23.7594\" r=\"2.1014\" fill=\"#fff\"/>\n    <path fill=\"#fcea2b\" d=\"m16.12,48.114c-3.1584,3.1634-4.6518,7.5601-3.97,11.688,4.128.6763,8.5223-.8196,11.683-3.977,3.1584-3.1634,4.6518-7.5601,3.97-11.688-4.128-.6763-8.5223.8196-11.683,3.977Z\"/>\n    <path fill=\"#61b2e4\" d=\"m31.973,45.839c-.1919.966-.6657,1.8536-1.3616,2.5507-.3389.3373-.7246.6241-1.1452.8516,2.1626,2.9716,3.7579,6.2847,4.6952,9.7506.7092-.6216,1.3906-1.2786,2.0417-1.9685,1.9136-2.0343,3.5491-4.3376,4.8516-6.8326,1.2507-2.4201,2.1751-4.9922,2.7442-7.6354-3.7285,1.9544-7.7719,3.0771-11.826,3.2837h0Z\"/>\n    <path fill=\"#92d3f5\" d=\"m14.923,35.749c-.69.65-1.3472,1.3303-1.9691,2.0383,3.4682.9313,6.7846,2.521,9.7604,4.6784.2264-.414.5104-.7939.8435-1.1281.6949-.6935,1.5791-1.1665,2.5417-1.3598.2106-4.0507,1.3364-8.0899,3.293-11.814.0019-.0037.0037-.0074.0056-.0112-2.645.5687-5.2188,1.4928-7.6405,2.7434-2.496,1.303-4.7999,2.9389-6.8346,4.853h0Z\"/>\n    <path fill=\"#ea5a47\" d=\"m34.821,20.747c-5.2314,5.2507-8.3665,12.1635-8.7228,19.233,1.6376-.3318,3.3326.1781,4.515,1.3584,1.186,1.1868,1.6956,2.8903,1.356,4.5332,7.0754-.3609,13.9919-3.5024,19.242-8.7398,6.7117-6.7229,9.8843-16.067,8.4337-24.839-1.7318-.2827-3.5044-.3879-5.2915-.3141-7.1741.2926-14.2097,3.4508-19.532,8.7677l-.0004.0006Zm10.249-.5291c1.8412-1.8413,4.8269-1.8418,6.6687-.0012.0004.0004.0008.0008.0012.0012,1.8418,1.8407,1.8424,4.8255.0012,6.6667-.0004.0004-.0008.0008-.0012.0012-1.8419,1.8404-4.8274,1.8398-6.6685-.0014-1.8417-1.8406-1.8424-4.8252-.0014-6.6665Z\"/>\n    <path fill=\"#f1b31c\" d=\"m26.538,52.037c-.8756.9831-1.8894,1.8467-3.0072,2.5617-3.4907,2.2228-7.7244,2.8345-11.441,1.653-.1495,1.1964-.1293,2.3916.06,3.5496,4.128.6763,8.5223-.8195,11.683-3.9769,1.1048-1.1131,2.0209-2.3956,2.7055-3.7874h-.0003Z\"/>\n    <path fill=\"#d22f27\" d=\"m26.204,38.687c-.033.4281-.0559.8558-.0684,1.283,1.6271-.316,3.305.1967,4.4773,1.3682,1.186,1.1868,1.6956,2.8903,1.356,4.5332,7.075-.3618,13.9907-3.5038,19.24-8.7412,1.4932-1.5067,2.8266-3.1619,3.9746-4.9339-1.3472,1.2267-2.8051,2.3344-4.353,3.3074-7.5574,4.7109-16.6938,5.8918-24.627,3.1832h.0005Z\"/>\n    <path fill=\"#61b2e4\" d=\"m24.039,48.551c.8703-.4372,1.7206-.9178,2.5501-1.438,2.4433-1.5323,4.6776-3.4046,6.6294-5.5552l.0028-.0028c1.8803-2.0911,3.4745-4.4187,4.7329-6.9122.061-.1204.0967-.252.1047-.3867-3.3985-.7533-14.846,10.251-14.0199,14.2949h0Z\"/>\n  </g>\n  <g id=\"line\">\n    <path d=\"m48.405,29.49c-3.2761,0-5.941-2.6641-5.941-5.9392s2.6649-5.9392,5.941-5.9392,5.941,2.6641,5.941,5.9392-2.6649,5.9392-5.941,5.9392Zm0-9.8987c-2.1839,0-3.9607,1.7757-3.9607,3.9595s1.7768,3.9595,3.9607,3.9595,3.9607-1.7758,3.9607-3.9595-1.7769-3.9595-3.9607-3.9595Z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.949\" d=\"m20.653,45.063c-1.678.7083-3.2222,1.7475-4.5331,3.0508-3.1581,3.1631-4.6517,7.5594-3.9703,11.687,4.128.6762,8.5221-.8196,11.683-3.9769,1.3043-1.3104,2.3446-2.8541,3.0537-4.5318\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.949\" d=\"m14.923,35.749c-.69.65-1.3472,1.3303-1.9691,2.0383,3.4682.9313,6.7846,2.521,9.7604,4.6784.2264-.414.5104-.7939.8435-1.1281.6949-.6935,1.5791-1.1665,2.5417-1.3598.2106-4.0507,1.3364-8.0899,3.293-11.814.0019-.0037.0037-.0074.0056-.0112-2.645.5687-5.2188,1.4928-7.6405,2.7434-2.496,1.303-4.7999,2.9389-6.8346,4.853h0Z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.949\" d=\"m31.973,45.839c-.1919.966-.6657,1.8536-1.3616,2.5507-.3389.3373-.7246.6241-1.1452.8516,2.1626,2.9716,3.7579,6.2847,4.6952,9.7506.7092-.6216,1.3906-1.2786,2.0417-1.9685,1.9136-2.0343,3.5491-4.3376,4.8516-6.8326,1.2507-2.4201,2.1751-4.9922,2.7442-7.6354-3.7285,1.9544-7.7719,3.0771-11.826,3.2837h0Z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.949\" d=\"m31.83,43.345c.2696.8863.2506,1.6919.1371,2.5245,7.0759-.3611,13.993-3.5031,19.243-8.7412,6.7106-6.7215,9.8836-16.063,8.4351-24.834-8.7712-1.4365-18.108,1.742-24.823,8.4508-5.2322,5.2509-8.3679,12.164-8.7242,19.234.9413-.1907,1.8984-.0942,2.7693.2387\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.949\" d=\"m37.072,34.196h-.0002c-2.4156,1.2183-4.6724,2.7626-6.6996,4.5844-2.0849,1.8911-3.9,4.0556-5.3844,6.4211-.5039.8031-.9684,1.6273-1.3917,2.4694\"/>\n  </g>",
-  cube: "<g id=\"color\">\n    <polygon fill=\"#D0CFCE\" points=\"58.0936,22.6076 35.6729,27.8442 13.9289,22.2732 35.6729,17.4173\"/>\n    <polygon fill=\"#9B9B9A\" points=\"58.2211,48.3473 36.0428,54.1045 35.6729,27.0042 58.1657,21.846\"/>\n    <polygon fill=\"#D0CFCE\" points=\"13.9856,47.957 35.7027,54.1045 35.6729,27.8442 22.6497,24.6986 13.9832,22.2957\"/>\n  </g>\n  <g id=\"hair\"/>\n  <g id=\"skin\"/>\n  <g id=\"skin-shadow\"/>\n  <g id=\"line\">\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2.069\" points=\"35.6352,54.0172 57.4698,48.7313 57.4698,21.7647 35.6167,26.5155 13.7667,21.7647 13.7667,48.7313 35.6013,54.0172 35.6013,30.3713\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2.069\" points=\"13.7667,21.7647 35.8082,16.4545 57.4698,21.7647\"/>\n    <circle cx=\"21.2735\" cy=\"32.9339\" r=\"3\"/>\n    <circle cx=\"27.2446\" cy=\"44.3761\" r=\"3\"/>\n    <circle cx=\"41.767\" cy=\"45.2211\" r=\"3\"/>\n    <circle cx=\"46.8274\" cy=\"38.0668\" r=\"3\"/>\n    <circle cx=\"51.8878\" cy=\"30.9124\" r=\"3\"/>\n    <ellipse cx=\"35.8312\" cy=\"21.1219\" rx=\"4\" ry=\"1.6191\"/>\n  </g>",
-  telescope: "<g id=\"color\">\n    <path fill=\"#3f3f3f\" d=\"m52.3814,18.772l-3.5781-8.2122-6.837,3.3699c.2373-.1073,3.2886,7.6306,3.2886,7.6306.1093.2534,7.1265-2.7883,7.1265-2.7883Z\"/>\n    <path fill=\"#9b9b9a\" d=\"m29.095,27.698l3.8277-1.665c-.0619.0172,12.4053-4.5587,12.4053-4.5587l-3.1999-7.6428-15.205,7.5593,2.1719,6.3072Z\"/>\n    <path fill=\"#9b9b9a\" d=\"m14.6585,27.9833l1.7596,3.9323,13.2103-4.4182-2.4411-6.2384-4.0234,2.1377c.2375-.0993-8.5054,4.5866-8.5054,4.5866Z\"/>\n  </g>\n  <g id=\"line\">\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"16.0186 56.6623 29.1491 36.039 31.624 36.039 43.8948 56.6564\"/>\n    <line x1=\"30.4618\" x2=\"30.4618\" y1=\"36.741\" y2=\"60.257\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"9.7475\" x2=\"11.8352\" y1=\"32.5748\" y2=\"31.7117\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"45.6328 12.1786 48.8033 10.5598 52.3814 18.772 49.2019 19.9125\"/>\n    <line x1=\"26.8219\" x2=\"30.3531\" y1=\"19.924\" y2=\"31.3607\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <circle cx=\"30.3531\" cy=\"31.3607\" r=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"25.028 28.5329 16.1973 31.7319 14.6585 28.1744 23.5457 23.5568\"/>\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"30.9216 19.7807 42.1281 14.0815 45.2549 21.3103 32.6562 25.8289\"/>\n  </g>",
-  planet: "<g id=\"color\">\n    <circle cx=\"36.1456\" cy=\"36.4282\" r=\"22.5428\" fill=\"#ea5a47\"/>\n    <path fill=\"#d22f27\" d=\"M52.5238,20.931A22.5441,22.5441,0,0,1,16.2821,47.0757,22.5423,22.5423,0,1,0,52.5238,20.931Z\"/>\n    <path fill=\"#f1b31c\" d=\"M52.7935,22.7551c7.6746-.9256,13.1384-.0236,14.1918,2.8489C68.8256,30.6221,56.51,39.7536,39.4777,46S7.1461,53.2415,5.3059,48.2235c-1.07-2.9183,2.6472-7.2279,9.2958-11.552l.0766,1.5538c-2.5091,2.2523-3.7143,4.3411-3.1382,5.9122,1.4336,3.909,13.3515,3.1334,26.6194-1.7323s22.8616-11.9789,21.428-15.8879c-.5527-1.5073-2.6644-2.3181-5.8112-2.4664Z\"/>\n  </g>\n  <g id=\"line\">\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M17.1562,46.5937A21.5389,21.5389,0,1,1,55.9267,27.9065\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M57.6771,37.1641a21.5552,21.5552,0,0,1-34.892,16.1641\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M52.7935,22.7551c7.6746-.9256,13.1384-.0236,14.1918,2.8489C68.8256,30.6221,56.51,39.7536,39.4777,46S7.1461,53.2415,5.3059,48.2235c-1.07-2.9183,2.6472-7.2279,9.2958-11.552\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M53.7763,24.0509c3.1468.1483,5.2585.9591,5.8112,2.4664,1.4336,3.909-8.16,11.0223-21.428,15.8879S12.9737,48.0465,11.54,44.1375c-.5761-1.5711.6291-3.66,3.1382-5.9122\"/>\n  </g>",
-  pencil: "<g id=\"color\">\n    <polygon fill=\"#3F3F3F\" stroke=\"none\" points=\"14.5943,53.154 18.2544,56.814 12.6242,59.0928\"/>\n    <polyline fill=\"#f4aa41\" stroke=\"none\" points=\"18.0381,41.8761 36.8684,23.0457 48.1813,34.3586 29.5108,53.0291\"/>\n    <polyline fill=\"#a57939\" stroke=\"none\" points=\"14.4132,52.5663 17.9281,43.3946 27.8278,53.2939 18.6558,56.809\"/>\n    <polyline fill=\"#EA5A47\" stroke=\"none\" points=\"42.9209,16.9933 50.4228,9.4913 61.7357,20.8042 54.2975,28.2424\"/>\n    <polyline fill=\"#9b9b9a\" stroke=\"none\" points=\"35.6498,24.2643 43.3318,16.5823 54.6447,27.8952 47.0278,35.512\"/>\n  </g>\n  <g id=\"hair\"/>\n  <g id=\"skin\"/>\n  <g id=\"skin-shadow\"/>\n  <g id=\"line\">\n    <polygon fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"18.6304,56.8203 27.8278,53.2939 53.8207,27.301 43.9212,17.4015 17.9281,43.3946 14.3904,52.6032\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"47.3354,13.9873 50.8388,10.4839 60.7383,20.3834 57.2645,23.8572\"/>\n    <line x1=\"18.5562\" x2=\"28.4557\" y1=\"42.7665\" y2=\"52.6659\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"14.3979,52.5817 11.9073,59.3148 18.6558,56.809\"/>\n    <line x1=\"36.9099\" x2=\"46.4225\" y1=\"25.0073\" y2=\"34.5199\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n  </g>",
-  floppies: "<g id=\"color\">\n    <rect x=\"11.1359\" y=\"11\" width=\"50\" height=\"50\" fill=\"#3F3F3F\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <polyline fill=\"#D0CFCE\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"56.1359,60 56.1359,35.1616 16.1359,35.1616 16.1359,60\"/>\n    <polyline fill=\"#9B9B9A\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"16.1359,12 16.1359,29.6067 47.0488,29.6067 47.0488,12\"/>\n    <rect x=\"19.9563\" y=\"38.96\" width=\"32.0306\" height=\"5.7713\" fill=\"#61B2E4\" stroke=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n  </g>\n  <g id=\"hair\"/>\n  <g id=\"skin\"/>\n  <g id=\"skin-shadow\"/>\n  <g id=\"line\">\n    <rect x=\"11.1359\" y=\"11\" width=\"50\" height=\"50\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"56.1359,60 56.1359,35.1616 16.1359,35.1616 16.1359,60\"/>\n    <polyline fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\" points=\"16.1359,12 16.1359,29.6067 47.0488,29.6067 47.0488,12\"/>\n    <rect x=\"19.9563\" y=\"38.96\" width=\"32.0306\" height=\"5.7713\" fill=\"none\" stroke=\"#000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>\n  </g>",
-  mouse: "<g id=\"color\">\n    <path fill=\"#d0cfce\" d=\"m38.41,11.95h-4.821c-7.25,0-13.18,4.932-13.18,12.18v23.74c0,7.25,5.932,12.18,13.18,12.18h4.821c7.25,0,13.18-4.932,13.18-12.18v-23.74c-.0001-7.25-5.932-12.18-13.18-12.18Z\"/>\n    <path fill=\"#3f3f3f\" d=\"m36.15,17.93h-.3082c-1.407,0-2.558,1.151-2.558,2.558v7.94c0,1.407,1.151,2.558,2.558,2.558h.3082c1.407,0,2.558-1.151,2.558-2.558v-7.94c0-1.407-1.151-2.558-2.558-2.558Z\"/>\n    <path fill=\"#9b9b9a\" d=\"m34.79,12.79c3.959,1.699,7.723,4.137,8.161,10.3.5077,7.135-2.133,20.5-2.982,27.28-.5935,4.745-2.3281,6.4477-5.4441,8.9377-1.571,1.256,6.7008.6745,10.1818-1.3614,2.989-1.747,3.9726-3.4222,5.7914-6.5333l.1283-30.0929s-1.225-9.075-11.2-9.078c0,0-10.01-.5155-4.635.5512l-.0014-.0034Z\"/>\n  </g>\n  <g id=\"line\">\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m36.26,31.12h-.5181c-1.37,0-2.49-1.115-2.49-2.478v-8.126c0-1.363,1.121-2.478,2.49-2.478h.5181c1.37,0,2.49,1.115,2.49,2.478v8.126c0,1.363-1.121,2.478-2.49,2.478Z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m39.61,60.05h-7.215c-6.475,0-11.77-5.263-11.77-11.7v-24.71c0-6.432,5.298-11.7,11.77-11.7h7.215c6.475,0,11.77,5.263,11.77,11.7v24.71c0,6.432-5.298,11.7-11.77,11.7Z\"/>\n  </g>",
-  dish: "<g id=\"color\">\n    <path fill=\"#d0cfce\" d=\"m14.276,31.5192h3.2117l-.0234-1.1721-3.2401.0106c-.0434.3279.0085.8336.0519,1.1615Z\"/>\n    <polygon fill=\"#9b9b9a\" points=\"52.4477 59.999 54.9527 38.197 51.7041 38.197 48.8004 59.999 52.4477 59.999\"/>\n    <path fill=\"#d0cfce\" d=\"m47.6445,29.3771c.0569.5118.0938,1.0293.0938,1.556,0-.5267-.0369-1.0442-.0938-1.556Z\"/>\n    <path fill=\"#d0cfce\" d=\"m48.8004,29.3771c-.4111-3.6953-2.5001-7.7075-5.8095-10.2492-2.6571-2.0407-6.2527-2.9817-9.2531-3.1947l.2712,26.9989c.2486.6495-.3346,2.4231.6547,2.6473,2.0178.4572,6.3562-1.3102,8.0762-2.6473,1.7857-1.3882,3.8837-3.5192,4.9515-6.3317.9164-2.4136.9159-5.4874,1.109-7.2233Z\"/>\n    <path fill=\"#9b9b9a\" d=\"m34.7383,41.7864l-1.2595.1084.259,4.0384c2.2672-.1608,8.4311-2.5655,10.2455-4.0463,2.9667-2.4215,4.7545-5.8777,4.7545-10.9537,0-.5267,0-1.7478-1.0933-1.5561-.7412,6.6622-6.1689,11.9313-12.9062,12.4093Z\"/>\n    <path fill=\"#3f3f3f\" d=\"m52.7421,27.7526l-3.4453-.0401c-.499.189-.6415,5.5357-.0034,6.2814h3.0961s2.7955-.5886,2.4704-3.7291c-.3754-2.5138-1.5545-2.5138-2.1178-2.5122Z\"/>\n  </g>\n  <g id=\"line\">\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m33.7378,45.9332c8.2843,0,15-6.7157,15-15s-6.7157-15-15-15v30Z\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m52.6418,27.9625c1.6565.0351,2.9709,1.4064,2.9358,3.0629-.0351,1.6565-1.4064,2.9709-3.0629,2.9358\"/>\n    <path fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m18.4115,32.4905h-4.3872s-.7404.0215-.7404-1.5303.7404-1.5305.7404-1.5305h4.3872v3.0608Z\"/>\n    <line x1=\"24.1309\" x2=\"33.7378\" y1=\"30.9332\" y2=\"30.9332\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"22.1212\" x2=\"33.7378\" y1=\"27.6488\" y2=\"15.9332\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"22.1564\" x2=\"33.7378\" y1=\"34.2741\" y2=\"45.9332\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <line x1=\"40.2378\" x2=\"58.8314\" y1=\"59.999\" y2=\"59.999\" fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/>\n    <polyline fill=\"none\" stroke=\"#000\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" points=\"48.8004 59.999 51.7041 38.197 54.9527 38.197 52.049 59.999\"/>\n  </g>",
-};
-function icon(id,size){ return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 72 72">'+ICONS[id]+'</svg>'; }
-function floatPlus(x,y,parent){
-  const f=document.createElement('span');
-  f.className='gfloat'; f.textContent='+1';
-  f.style.left=x+'px'; f.style.top=y+'px';
-  parent.appendChild(f);
-  setTimeout(()=>f.remove(),700);
-}
-
-const WPOOL=['rocket','cube','telescope','planet','pencil','floppies','mouse','dish'];
-const MPOOL=['rocket','cube','telescope','planet','floppies','dish'];
-const BLURB={
-  whack:"things will pop up on the bench. click them before they vanish.",
-  catch:"things will fall off the shelf. catch them before they hit the table.",
-  memory:"find the pairs. PLUTO is timing your brain, not your hands."
-};
-
-const gstage=document.getElementById('gstage');
-const gscoreEl=document.getElementById('gscore');
-const gtimeEl=document.getElementById('gtime');
-const gtimewrap=document.getElementById('gtimewrap');
-const gstart=document.getElementById('gstart');
-const gmsg=document.getElementById('gmsg');
-const gtabs=[...document.querySelectorAll('.gtab')];
-
-let active='whack', score=0, timeLeft=20, countdownTimer=null, playing=false;
-
-function setScore(t){ gscoreEl.textContent=t; }
-
-/* ---------- whack-a-mole ---------- */
-const whack={spawnTimer:null, pops:new Map()};
-function whackStop(){
-  clearInterval(whack.spawnTimer); whack.spawnTimer=null;
-  whack.pops.forEach((t,el)=>{ clearTimeout(t); el.classList.remove('up'); el.innerHTML=''; });
-  whack.pops.clear();
-}
-function whackBoard(){
-  gstage.innerHTML='<div class="wgrid">'+Array.from({length:6},(_,i)=>'<div class="gslot" data-slot="'+i+'"></div>').join('')+'</div>';
-}
-function whackStart(){
-  whackBoard();
-  const slots=[...gstage.querySelectorAll('.gslot')];
-  slots.forEach(s=>s.addEventListener('click',()=>{
-    if(!s.classList.contains('up'))return;
-    score++; setScore('SCORE '+score);
-    clearTimeout(whack.pops.get(s)); whack.pops.delete(s);
-    const r=s.getBoundingClientRect(), gr=gstage.getBoundingClientRect();
-    floatPlus(r.left-gr.left+r.width/2, r.top-gr.top+r.height*.3, gstage);
-    s.classList.remove('up'); s.classList.add('hit');
-    s.innerHTML='';
-    setTimeout(()=>s.classList.remove('hit'),260);
-  }));
-  whack.spawnTimer=setInterval(()=>{
-    const free=slots.filter(s=>!s.classList.contains('up'));
-    if(!free.length)return;
-    const s=free[Math.floor(Math.random()*free.length)];
-    const id=WPOOL[Math.floor(Math.random()*WPOOL.length)];
-    s.innerHTML='<div class="gpiece">'+icon(id,58)+'</div>';
-    s.classList.add('up');
-    const t=setTimeout(()=>{ s.classList.remove('up'); s.innerHTML=''; whack.pops.delete(s); },820);
-    whack.pops.set(s,t);
-  },640);
-}
-function reactWhack(s){
-  if(s===0)return "zero. the objects remain undefeated.";
-  if(s<=3)return "a few casualties. mostly yours.";
-  if(s<=7)return "respectable. the dice looked nervous.";
-  if(s<=12)return "okay now you're just showing off.";
-  return "i'm telling the rocket to watch its back.";
-}
-
-/* ---------- catch ---------- */
-const catchG={spawnTimer:null, pieces:new Set()};
-function catchStop(){
-  clearInterval(catchG.spawnTimer); catchG.spawnTimer=null;
-  catchG.pieces.forEach(el=>{clearTimeout(el._t); el.remove();});
-  catchG.pieces.clear();
-}
-function catchBoard(){
-  gstage.innerHTML='<div class="cstage" id="cstage"></div>';
-}
-function catchStart(){
-  catchBoard();
-  const stageEl=document.getElementById('cstage');
-  catchG.spawnTimer=setInterval(()=>{
-    const id=WPOOL[Math.floor(Math.random()*WPOOL.length)];
-    const el=document.createElement('div');
-    el.className='gfall';
-    el.innerHTML=icon(id,50);
-    const maxLeft=Math.max(0, stageEl.clientWidth-54);
-    el.style.left=Math.floor(Math.random()*maxLeft)+'px';
-    el.style.top='-54px';
-    const spin=(Math.random()<.5?'':'-')+(2.2+Math.random()*1.6).toFixed(2)+'s';
-    el.style.animation='gspin '+spin+' linear infinite';
-    stageEl.appendChild(el);
-    catchG.pieces.add(el);
-    requestAnimationFrame(()=>{
-      el.style.transition='top 2.4s linear';
-      el.style.top=(stageEl.clientHeight+10)+'px';
-    });
-    el.addEventListener('click',()=>{
-      if(!catchG.pieces.has(el))return;
-      score++; setScore('SCORE '+score);
-      catchG.pieces.delete(el); clearTimeout(el._t);
-      const r=el.getBoundingClientRect(), gr=stageEl.getBoundingClientRect();
-      floatPlus(r.left-gr.left+r.width/2, r.top-gr.top+r.height/2, stageEl);
-      el.style.transition='transform .18s ease,opacity .18s ease';
-      el.style.transform='scale(1.6)'; el.style.opacity='0';
-      setTimeout(()=>el.remove(),180);
-    });
-    el._t=setTimeout(()=>{ catchG.pieces.delete(el); el.remove(); },2500);
-  },780);
-}
-function reactCatch(s){
-  if(s===0)return "you caught nothing. gravity wins again.";
-  if(s<=3)return "a few made it. barely.";
-  if(s<=7)return "solid hands. nothing escapes orbit today.";
-  return "perfect streak. are you even human.";
-}
-
-/* ---------- memory ---------- */
-let mem={openEls:[], moves:0, lock:false, matched:0};
-function memoryStop(){ mem={openEls:[],moves:0,lock:false,matched:0}; }
-function memoryBoard(){
-  let deck=[...MPOOL,...MPOOL];
-  for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
-  gstage.innerHTML='<div class="mgrid">'+deck.map((id,idx)=>
-    '<button class="gcard" data-idx="'+idx+'" data-id="'+id+'">'
-    +'<span class="gcard-inner">'
-    +'<span class="gcard-face gcard-back"><span class="qm">?</span></span>'
-    +'<span class="gcard-face gcard-front">'+icon(id,42)+'</span>'
-    +'</span></button>'
-  ).join('')+'</div>';
-}
-function memoryStart(){
-  memoryBoard();
-  mem={openEls:[],moves:0,lock:false,matched:0};
-  setScore('MOVES 0');
-  gstage.querySelectorAll('.gcard').forEach(card=>{
-    card.addEventListener('click',()=>{
-      if(mem.lock||card.classList.contains('open')||card.classList.contains('matched'))return;
-      card.classList.add('open');
-      mem.openEls.push(card);
-      if(mem.openEls.length===2){
-        mem.moves++; setScore('MOVES '+mem.moves);
-        mem.lock=true;
-        const [a,b]=mem.openEls;
-        if(a.dataset.id===b.dataset.id){
-          setTimeout(()=>{
-            a.classList.add('matched'); b.classList.add('matched');
-            mem.openEls=[]; mem.lock=false; mem.matched++;
-            if(mem.matched===MPOOL.length){ endGame('memory'); }
-          },200);
-        } else {
-          setTimeout(()=>{
-            a.classList.remove('open'); b.classList.remove('open');
-            mem.openEls=[]; mem.lock=false;
-          },800);
-        }
-      }
-    });
-  });
-}
-function reactMemory(m){
-  if(m<=8)return "suspiciously good. did you peek?";
-  if(m<=14)return "respectable memory. PLUTO is mildly impressed.";
-  if(m<=22)return "you found them all. eventually.";
-  return "a valiant, chaotic effort.";
-}
-
-/* ---------- controller ---------- */
-function stopAll(){
-  whackStop(); catchStop(); memoryStop();
-  clearInterval(countdownTimer); countdownTimer=null;
-  playing=false;
-}
-function idleState(game){
-  stopAll();
-  gstage.innerHTML='';
-  score=0;
-  if(game==='memory'){ gtimewrap.style.visibility='hidden'; setScore('MOVES 0'); }
-  else { gtimewrap.style.visibility='visible'; gtimeEl.textContent='0:20'; setScore('SCORE 0'); }
-  gstart.textContent='▶ play'; gstart.disabled=false;
-  gmsg.textContent=BLURB[game];
-}
-function startCountdown(onEnd){
-  timeLeft=20; gtimeEl.textContent='0:20';
-  countdownTimer=setInterval(()=>{
-    timeLeft--;
-    gtimeEl.textContent='0:'+String(timeLeft).padStart(2,'0');
-    if(timeLeft<=0){ clearInterval(countdownTimer); countdownTimer=null; onEnd(); }
-  },1000);
-}
-function endGame(game){
-  playing=false;
-  if(game==='whack'){ whackStop(); gmsg.textContent=reactWhack(score); }
-  if(game==='catch'){ catchStop(); gmsg.textContent=reactCatch(score); }
-  if(game==='memory'){ gmsg.textContent=reactMemory(mem.moves); }
-  gstart.textContent='↺ play again'; gstart.disabled=false;
-}
-gtabs.forEach(tab=>tab.addEventListener('click',()=>{
-  gtabs.forEach(t=>{t.classList.remove('on');t.setAttribute('aria-selected','false');});
-  tab.classList.add('on'); tab.setAttribute('aria-selected','true');
-  active=tab.dataset.game;
-  idleState(active);
-}));
-gstart.addEventListener('click',()=>{
-  if(playing)return;
-  playing=true; gstart.disabled=true; score=0;
-  gmsg.textContent='go!';
-  if(active==='whack'){ setScore('SCORE 0'); whackStart(); startCountdown(()=>endGame('whack')); }
-  else if(active==='catch'){ setScore('SCORE 0'); catchStart(); startCountdown(()=>endGame('catch')); }
-  else if(active==='memory'){ memoryStart(); }
-});
-idleState('whack');
-
-})();
-
-</script>
+<script src="home.js"></script>
 </body>
 </html>
