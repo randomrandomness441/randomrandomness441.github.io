@@ -136,8 +136,7 @@
               <li>Moved <strong>4,000+ live pipelines</strong> onto the platform (~70 PB, 7,000+ daily flows) while cutting Spark usage 15%.</li>
               <li>Built APIs so pipelines read Hive and Iceberg interchangeably, carrying <strong>15,000+ table migrations</strong> with no SLA breach.</li>
               <li>Led the response to an org-wide Code Yellow with automated regression, a 24-hour soak and gated promotion: <strong>zero hard-SLA misses</strong> over 3 months.</li>
-              <li>Built an LLM output-regression checker (onboarding 3 days to 1) and a <strong>~98%-accurate</strong> duplicate-pipeline detector on embeddings and vector search.</li>
-              <li>Set up the infra org's first central testing platform, adopted by 6+ teams.</li>
+                            <li>Set up the infra org's first central testing platform, adopted by 6+ teams.</li>
             </ul>
             <div class="s-chips"><span class="s-chip">Java</span><span class="s-chip">Spark</span><span class="s-chip">dbt</span><span class="s-chip">Iceberg</span><span class="s-chip">Trino</span></div>
           </div>
@@ -150,7 +149,7 @@
             <ul class="job__points">
               <li>Architected a MySQL → Kafka → Elasticsearch pipeline with ActiveMQ retries and a dead-letter queue, sustaining <strong>~40K writes/sec</strong>.</li>
               <li>Cut report generation from <strong>5–6 hours to seconds</strong> with queue-backed async jobs.</li>
-              <li>Served <strong>300 QPS at p99 200ms</strong> on the merchant dashboard APIs, and kept payments fast through IPL peaks by warming the JVM before pods took traffic.</li>
+              <li>Served <strong>3K QPS at p99 200ms</strong> on the merchant dashboard APIs, and kept payments fast through IPL peaks by warming the JVM before pods took traffic.</li>
               <li>Added a backup reporting path for Elasticsearch outages and right-sized Kubernetes resources to cut cost.</li>
             </ul>
             <div class="s-chips"><span class="s-chip">Java</span><span class="s-chip">Kafka</span><span class="s-chip">Elasticsearch</span><span class="s-chip">MongoDB</span><span class="s-chip">Kubernetes</span></div>
@@ -163,7 +162,7 @@
   <!-- WORK -->
   <section class="work" id="work">
     <div class="wrap">
-      <div class="section__head reveal"><p class="eyebrow">Selected work</p><h2>Four things worth opening.</h2><p>Two side projects with public write-ups, and two systems from my day jobs.</p></div>
+      <div class="section__head reveal"><p class="eyebrow">Selected work</p><h2>Three projects worth opening.</h2><p>Side projects I build on my own time, each with a public write-up.</p></div>
       <div class="cases">
 
         <article class="case reveal">
@@ -175,7 +174,7 @@
             <p class="case__no">01 / 2026 · Personal project</p>
             <h3>Kapitsa</h3>
             <p class="case__tag">Telling reasoning questions from recall trivia.</p>
-            <p class="case__lede">A pipeline that reads quiz decks and videos, judges each question, and finds its source article. Every verdict has to be checkable, and every score has to beat a dumb baseline first. A fine-tuned Qwen3-8B generator is the goal.</p>
+            <p class="case__lede">Extracts questions and answers from quiz decks and recorded quiz videos, judges which ones need reasoning, and finds each question's source article. Every verdict has to be checkable, and every score has to beat a dumb baseline first. A fine-tuned Qwen3-8B generator is the goal.</p>
             <div class="s-chips"><span class="s-chip">Python</span><span class="s-chip">Qdrant</span><span class="s-chip">Qwen3-8B</span><span class="s-chip">LLM eval</span></div>
             <a class="case__go" href="kapitsa.html">Read the write-up <span aria-hidden="true">→</span></a>
           </div>
@@ -188,41 +187,26 @@
           </a>
           <div class="case__body">
             <p class="case__no">02 / 2026 · Personal project</p>
-            <h3>Curie</h3>
-            <p class="case__tag">A concurrency tutor that tries to break your code.</p>
-            <p class="case__lede">Compiles your code, runs ThreadSanitizer, then stress-tests it under randomized scheduling. The second half reads job postings and writes resumes that can't claim more than you've actually done.</p>
-            <div class="s-chips"><span class="s-chip">Python</span><span class="s-chip">C++</span><span class="s-chip">Java</span><span class="s-chip">Local-first</span></div>
+            <h3>Concurrency tutor</h3>
+            <p class="case__tag">A C++ concurrency course that tries to break your code.</p>
+            <p class="case__lede">Compiles your code, runs ThreadSanitizer, then stress-tests it 150 times under randomized scheduling. A verdict, not just a pass or fail: "passes but races" is its own result. It is one half of Curie.</p>
+            <div class="s-chips"><span class="s-chip">C++</span><span class="s-chip">Python</span><span class="s-chip">ThreadSanitizer</span><span class="s-chip">Local-first</span></div>
             <a class="case__go" href="curie.html">Read the write-up <span aria-hidden="true">→</span></a>
           </div>
         </article>
 
         <article class="case reveal">
-          <div class="case__shot c3" aria-hidden="true">
-            <div class="row"><span class="node">MySQL</span><span class="arr">→</span><span class="node">Kafka</span><span class="arr">→</span><span class="node">Elasticsearch</span></div>
-            <span class="cap">+ ActiveMQ retries · dead-letter queue</span>
-          </div>
+          <a class="case__shot c3" href="curie.html" tabindex="-1" aria-hidden="true">
+            <div class="row"><span class="node">posting</span><span class="arr">→</span><span class="node">fit score</span><span class="arr">→</span><span class="node">1-page resume</span></div>
+            <span class="cap">claims backed by your own facts</span>
+          </a>
           <div class="case__body">
-            <p class="case__no">03 / 2022–24 · Cashfree</p>
-            <h3>Event pipeline</h3>
-            <p class="case__tag">~40K writes/sec for IRCTC and Swiggy.</p>
-            <p class="case__lede">An event-driven pipeline with retries, a dead-letter queue, and a backup reporting path so merchants kept access to their data during Elasticsearch outages.</p>
-            <div class="s-chips"><span class="s-chip">Java</span><span class="s-chip">Kafka</span><span class="s-chip">Elasticsearch</span><span class="s-chip">ActiveMQ</span></div>
-            <span class="case__note">Work project · no public write-up</span>
-          </div>
-        </article>
-
-        <article class="case reveal">
-          <div class="case__shot c4" aria-hidden="true">
-            <div class="row"><span class="node">Hive</span><span class="arr">⇄</span><span class="node">API</span><span class="arr">⇄</span><span class="node">Iceberg</span></div>
-            <span class="cap">15,000+ tables migrated, no SLA breach</span>
-          </div>
-          <div class="case__body">
-            <p class="case__no">04 / 2024–26 · LinkedIn</p>
-            <h3>Data platform tooling</h3>
-            <p class="case__tag">Safe migration and testing at 70 PB.</p>
-            <p class="case__lede">APIs that let pipelines read Hive and Iceberg interchangeably, a central testing platform adopted by 6+ teams, and an embeddings-based detector that finds duplicate pipelines at ~98% accuracy.</p>
-            <div class="s-chips"><span class="s-chip">Spark</span><span class="s-chip">dbt</span><span class="s-chip">Iceberg</span><span class="s-chip">Vector search</span></div>
-            <span class="case__note">Work project · no public write-up</span>
+            <p class="case__no">03 / 2026 · Personal project</p>
+            <h3>Job-search pipeline</h3>
+            <p class="case__tag">Resumes that can't claim more than you've done.</p>
+            <p class="case__lede">Reads a job posting against your real work history, scores the fit two ways (an LLM judgment and a literal keyword count), and writes a one-page resume from a bank of your own facts. A style gate blocks AI-sounding phrasing before anything renders. It is the other half of Curie.</p>
+            <div class="s-chips"><span class="s-chip">Python</span><span class="s-chip">LLM fallback chain</span><span class="s-chip">Local-first</span></div>
+            <a class="case__go" href="curie.html">Read the write-up <span aria-hidden="true">→</span></a>
           </div>
         </article>
 
