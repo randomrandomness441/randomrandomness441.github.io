@@ -353,3 +353,41 @@ a.case__shot:hover{transform:translate(-3px,-3px);box-shadow:8px 8px 0 0 var(--b
 .post-nav a.all{box-shadow:none;background:transparent}
 .foot__links{flex-basis:100%;display:flex;flex-wrap:wrap;gap:.5rem 1.25rem}
 @media (max-width:560px){.note{grid-template-columns:1fr}.note .arr{display:none}}
+
+/* ---------- project case studies (kapitsa, curie) ---------- */
+.cs{display:grid;grid-template-columns:190px minmax(0,1fr);gap:clamp(2rem,5vw,4.5rem);align-items:start}
+.rail{position:sticky;top:calc(var(--bar-h) + 2rem);display:grid;gap:.15rem}
+.rail a{padding:.55rem .8rem;border-radius:var(--radius-chip);text-decoration:none;color:var(--ink-subtle);font-size:.9375rem;font-weight:500;transition:color .2s,background .2s}
+.rail a:hover{color:var(--ink);background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.rail a.on{color:var(--ink);background:color-mix(in srgb,var(--ink) 5%,transparent);box-shadow:inset 3px 0 0 var(--accent)}
+.rail a.ghost{margin-top:.75rem;border:var(--bw) dashed color-mix(in srgb,var(--ink) 32%,transparent);border-radius:var(--radius-pill);text-align:center}
+.rail a.ghost:hover{border-color:var(--ink)}
+.cs .body{max-width:760px}
+.cs h1{font-size:clamp(2.6rem,7vw,4.5rem);letter-spacing:-.04em;line-height:1}
+.cs .lede{font-size:clamp(1.125rem,2.2vw,1.375rem);line-height:1.45;color:var(--ink-muted);font-weight:500;letter-spacing:-.01em;margin-top:1rem;max-width:44rem}
+.metarow{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.5rem 0 .5rem}
+.pill{display:inline-flex;align-items:center;padding:.3rem .8rem;border:1.5px solid color-mix(in srgb,var(--ink) 28%,transparent);border-radius:var(--radius-pill);font-size:.8125rem;color:var(--ink-muted);text-decoration:none;background:var(--surface)}
+a.pill{transition:border-color .18s,background .18s,color .18s}
+a.pill:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--surface));color:var(--ink)}
+.cs .big{font-size:var(--fs-heading);margin-top:clamp(2.5rem,7vh,4rem);scroll-margin-top:calc(var(--bar-h) + 16px)}
+.cs span.eyebrow{margin:.7rem 0 1rem}
+.cs .body p{max-width:var(--measure);color:var(--ink-muted);margin-top:1rem;line-height:1.7}
+.cs .body p b{color:var(--ink)}
+.cs .body a:not(.pill){text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:3px;text-underline-offset:3px}
+.m-coreq{border:var(--bw) solid var(--border);border-left-width:8px;border-left-color:var(--accent);border-radius:var(--radius-card);background:var(--surface);padding:1.1rem 1.4rem;box-shadow:var(--shadow-hard);margin-bottom:.5rem}
+.m-coreq .q{font-size:clamp(1.125rem,2.2vw,1.375rem);font-weight:500;letter-spacing:-.015em;line-height:1.35}
+.qcard{margin:1.5rem 0;border:var(--bw) solid var(--border);border-radius:var(--radius-card);background:var(--surface);box-shadow:var(--shadow-hard);padding:1.25rem 1.5rem}
+.qcard .tag{display:inline-block;font-size:.6875rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;background:var(--accent);color:var(--accent-ink);border:1.5px solid var(--border);border-radius:var(--radius-chip);padding:.15rem .5rem;margin-bottom:.75rem}
+.qcard blockquote{margin:0;font-size:1.0625rem;line-height:1.55;font-weight:500}
+.qcard cite{display:block;margin-top:.75rem;font-style:normal;font-size:.875rem;color:var(--ink-subtle)}
+.mockcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-top:1.5rem}
+.mc{border:var(--bw) solid var(--border);border-radius:var(--radius-card);background:var(--surface);box-shadow:var(--shadow-hard);padding:1.1rem 1.2rem}
+.mc b{display:block;font-weight:700;letter-spacing:-.01em;line-height:1.25}
+.mc small{display:block;margin-top:.5rem;font-size:.875rem;line-height:1.5;color:var(--ink-muted)}
+.resolve{margin-top:1rem;display:grid;gap:.75rem}
+.resolve li{position:relative;padding-left:1.4rem;color:var(--ink-muted);max-width:var(--measure);line-height:1.65}
+.resolve li::before{content:'';position:absolute;left:0;top:.62em;width:8px;height:8px;background:var(--accent);border:1.5px solid var(--border)}
+.resolve b{color:var(--ink)}
+.m-takeaway{font-size:clamp(1.25rem,2.6vw,1.625rem)!important;line-height:1.4!important;font-weight:500;letter-spacing:-.02em;color:var(--ink)!important;border-left:6px solid var(--accent);padding-left:1.25rem;margin:1.25rem 0!important}
+.m-also{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-top:2rem;padding-top:1.25rem;border-top:var(--bw) dashed color-mix(in srgb,var(--ink) 32%,transparent);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-subtle)}
+@media (max-width:900px){.cs{grid-template-columns:1fr}.rail{position:static;display:flex;flex-wrap:wrap;gap:.4rem}.rail a.ghost{margin-top:0}}

@@ -108,3 +108,16 @@
     });
   }
 })();
+
+/* case-study rail follows the section in view */
+(function(){
+  const links=[...document.querySelectorAll('[data-rail]')];
+  if(!links.length)return;
+  const byId=new Map(links.map(a=>[a.dataset.rail,a]));
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+    if(!e.isIntersecting)return;
+    links.forEach(l=>l.classList.remove('on'));
+    const a=byId.get(e.target.id);if(a)a.classList.add('on');
+  }),{rootMargin:'-20% 0px -70% 0px'});
+  byId.forEach((_,id)=>{const el=document.getElementById(id);if(el)io.observe(el);});
+})();
